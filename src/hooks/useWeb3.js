@@ -62,6 +62,10 @@ export function useWeb3() {
         params: [{ chainId: networkConfig.chainIdHex }],
       });
     } catch (switchError) {
+      if (switchError.code === 4001 || switchError.message?.includes('User rejected')) {
+        console.log('User cancelled network switch.');
+        return;
+      }
       if (switchError.code === 4902 || switchError.message?.includes('unrecognized') || switchError.code === -32603) {
         try {
           await window.ethereum.request({
@@ -77,12 +81,14 @@ export function useWeb3() {
             ],
           });
         } catch (addError) {
-          console.error('Failed to add Arc network to wallet:', addError);
-          throw addError;
+          if (addError.code === 4001 || addError.message?.includes('User rejected')) {
+            console.log('User cancelled adding Arc network.');
+            return;
+          }
+          console.warn('Failed to add Arc network to wallet:', addError);
         }
       } else {
-        console.error('Failed to switch network:', switchError);
-        throw switchError;
+        console.warn('Failed to switch network:', switchError);
       }
     }
   }, [targetNetwork]);
