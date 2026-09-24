@@ -55,18 +55,30 @@ async function main() {
   console.log(`Deployer Address: ${wallet.address}`);
   console.log(`Deployer Balance: ${ethers.formatEther(balance)} USDC`);
 
-  console.log('Deploying ArcSplit contract...');
-  const factory = new ethers.ContractFactory(contractData.abi, contractData.bytecode, wallet);
-  const contract = await factory.deploy();
+  const bytecode = contractData.bytecode.startsWith('0x') ? contractData.bytecode : `0x${contractData.bytecode}`;
 
+  console.log('Deploying ArcSplit contract...');
+  const factory = new ethers.ContractFactory(contractData.abi, bytecode, wallet);
+  
+  let deployOptions = {};
+  try {
+    const estimated = await wallet.estimateGas({ data: bytecode });
+    deployOptions.gasLimit = (estimated * 125n) / 100n;
+  } catch (err) {
+    console.warn('Gas estimation failed, using fallback gas limit: 1,500,000');
+    deployOptions.gasLimit = 1500000n;
+  }
+
+  const contract = await factory.deploy(deployOptions);
   console.log(`Transaction sent: ${contract.deploymentTransaction().hash}`);
   console.log('Waiting for confirmation on Arc...');
   await contract.waitForDeployment();
 
   const deployedAddress = await contract.getAddress();
   console.log('\n======================================================');
-  console.log(` ArcSplit successfully deployed to: ${deployedAddress}`);
+  console.log(`⚡ ArcSplit successfully deployed to: ${deployedAddress}`);
   console.log(` Explorer: ${network.explorer}/address/${deployedAddress}`);
+  console.log(' Built by @metathesage for Arc Network');
   console.log('======================================================\n');
 }
 

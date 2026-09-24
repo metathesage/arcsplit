@@ -26,7 +26,7 @@ export function useWeb3() {
 
   const connectWallet = useCallback(async () => {
     if (!window.ethereum) {
-      alert('MetaMask or an injected Web3 wallet was not detected. Please install a Web3 wallet like MetaMask, Rabby, or Coinbase Wallet.');
+      alert('Web3 wallet was not detected. Please install MetaMask, Rabby, or Coinbase Wallet.');
       return;
     }
 
@@ -62,8 +62,7 @@ export function useWeb3() {
         params: [{ chainId: networkConfig.chainIdHex }],
       });
     } catch (switchError) {
-      // Chain not added to user wallet yet (4902 error code)
-      if (switchError.code === 4902 || switchError.message?.includes('unrecognized')) {
+      if (switchError.code === 4902 || switchError.message?.includes('unrecognized') || switchError.code === -32603) {
         try {
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
@@ -107,6 +106,71 @@ export function useWeb3() {
     setDeployedContractAddress(targetNetwork.defaultContract);
   }, [targetNetwork]);
 
+  // Robust deploy with gas fallback and 0x bytecode safety
+  const deployFreshContract = useCallback(async () => {
+    if (!window.ethereum) throw new Error('No Web3 wallet detected.');
+    if (!account) throw new Error('Please connect your wallet first.');
+    if (!isArc) {
+      await switchNetwork();
+    }
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+
+    // Verify user has balance for gas (native USDC on Arc)
+    const balWei = await provider.getBalance(account);
+    if (balWei === 0n) {
+      throw new Error(`Your wallet (${account.slice(0, 6)}...${account.slice(-4)}) has 0 USDC balance on ${targetNetwork.name}. You need a few cents of native USDC for gas.`);
+    }
+
+    const cleanBytecode = CONTRACT_BYTECODE.startsWith('0x')
+      ? CONTRACT_BYTECODE
+      : `0x${CONTRACT_BYTECODE}`;
+
+    const factory = new ethers.ContractFactory(CONTRACT_ABI, cleanBytecode, signer);
+
+    let deployOptions = {};
+    try {
+      const estimated = await signer.estimateGas({ data: cleanBytecode });
+      deployOptions.gasLimit = (estimated * 130n) / 100n; // 30% gas buffer
+    } catch (gasErr) {
+      console.warn('Gas estimation failed, using safe fallback gasLimit (1,200,000):', gasErr);
+      deployOptions.gasLimit = 1200000n;
+    }
+
+    console.log('Sending deployment transaction to Arc...');
+    const contract = await factory.deploy(deployOptions);
+    const deployTx = contract.deploymentTransaction();
+
+    let newAddress;
+    try {
+      console.log('Waiting for deployment confirmation on Arc...');
+      await contract.waitForDeployment();
+      newAddress = await contract.getAddress();
+    } catch (waitErr) {
+      console.warn('Direct waitForDeployment timed out or failed to parse receipt, querying tx receipt directly:', waitErr);
+      if (deployTx?.hash) {
+        const receipt = await provider.waitForTransaction(deployTx.hash, 1, 45000);
+        if (receipt?.contractAddress) {
+          newAddress = receipt.contractAddress;
+        } else {
+          throw waitErr;
+        }
+      } else {
+        throw waitErr;
+      }
+    }
+
+    setCustomContract(newAddress);
+    await refreshBalance(account, provider);
+
+    return {
+      address: newAddress,
+      txHash: deployTx.hash,
+      explorerUrl: `${targetNetwork.explorerUrl}/address/${newAddress}`,
+    };
+  }, [account, isArc, targetNetwork, switchNetwork, setCustomContract, refreshBalance]);
+
   // Execute Split Native USDC
   const executeSplit = useCallback(
     async ({ recipients, basisPoints, totalAmountUsdc, memo }) => {
@@ -120,56 +184,48 @@ export function useWeb3() {
       const signer = await provider.getSigner();
       const valueWei = ethers.parseEther(totalAmountUsdc.toString());
 
-      // Attempt execution via ArcSplit contract
+      // Check balance
+      const balWei = await provider.getBalance(account);
+      if (balWei < valueWei) {
+        throw new Error(`Insufficient USDC balance. You have ${ethers.formatEther(balWei)} USDC, but transaction requires ${totalAmountUsdc} USDC + gas.`);
+      }
+
+      // Check if target contract exists
+      const code = await provider.getCode(deployedContractAddress);
+      const contractExists = code && code !== '0x' && code !== '0x0';
+
+      if (!contractExists) {
+        throw new Error(
+          `Contract not found at ${deployedContractAddress} on ${targetNetwork.name}. Please go to the 'Contract Deployer' tab to deploy your dedicated instance with 1 click!`
+        );
+      }
+
       const contract = new ethers.Contract(deployedContractAddress, CONTRACT_ABI, signer);
 
+      let txOptions = { value: valueWei };
       try {
-        const tx = await contract.splitNative(recipients, basisPoints, memo || '', {
+        const estimated = await contract.splitNative.estimateGas(recipients, basisPoints, memo || '', {
           value: valueWei,
         });
-        const receipt = await tx.wait();
-        await refreshBalance(account, provider);
-        return {
-          hash: tx.hash,
-          receipt,
-          blockNumber: receipt.blockNumber,
-          explorerUrl: `${targetNetwork.explorerUrl}/tx/${tx.hash}`,
-        };
-      } catch (contractErr) {
-        console.warn('Contract call failed or contract not deployed, falling back to direct sequential transfer:', contractErr);
-        // Fallback: If the user hasn't deployed or contract call reverted, provide a clear actionable message or execute direct multi-send
-        throw contractErr;
+        txOptions.gasLimit = (estimated * 130n) / 100n;
+      } catch (err) {
+        console.warn('Gas estimation failed for splitNative, using fallback gas limit:', err);
+        txOptions.gasLimit = 400000n;
       }
+
+      const tx = await contract.splitNative(recipients, basisPoints, memo || '', txOptions);
+      const receipt = await tx.wait();
+      await refreshBalance(account, provider);
+
+      return {
+        hash: tx.hash,
+        receipt,
+        blockNumber: receipt.blockNumber,
+        explorerUrl: `${targetNetwork.explorerUrl}/tx/${tx.hash}`,
+      };
     },
     [account, isArc, deployedContractAddress, targetNetwork, switchNetwork, refreshBalance]
   );
-
-  // Deploy fresh ArcSplit contract from browser
-  const deployFreshContract = useCallback(async () => {
-    if (!window.ethereum) throw new Error('No Web3 wallet detected.');
-    if (!account) throw new Error('Please connect your wallet first.');
-    if (!isArc) {
-      await switchNetwork();
-    }
-
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-
-    const factory = new ethers.ContractFactory(CONTRACT_ABI, CONTRACT_BYTECODE, signer);
-    const contract = await factory.deploy();
-    const deployTx = contract.deploymentTransaction();
-    const receipt = await contract.waitForDeployment();
-    const newAddress = await contract.getAddress();
-
-    setCustomContract(newAddress);
-    await refreshBalance(account, provider);
-
-    return {
-      address: newAddress,
-      txHash: deployTx.hash,
-      explorerUrl: `${targetNetwork.explorerUrl}/address/${newAddress}`,
-    };
-  }, [account, isArc, targetNetwork, switchNetwork, setCustomContract, refreshBalance]);
 
   // Listen to account and network changes
   useEffect(() => {
@@ -196,7 +252,6 @@ export function useWeb3() {
     window.ethereum.on('accountsChanged', handleAccountsChanged);
     window.ethereum.on('chainChanged', handleChainChanged);
 
-    // Initial check if already connected
     const checkConnection = async () => {
       try {
         const provider = new ethers.BrowserProvider(window.ethereum);

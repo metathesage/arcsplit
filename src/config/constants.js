@@ -29,7 +29,9 @@ export const ARC_TESTNET = {
 };
 
 export const CONTRACT_ABI = contractData.abi;
-export const CONTRACT_BYTECODE = contractData.bytecode;
+export const CONTRACT_BYTECODE = contractData.bytecode.startsWith('0x')
+  ? contractData.bytecode
+  : `0x${contractData.bytecode}`;
 
 export const PRESET_SPLITS = [
   { label: 'Equal Split', value: 'equal' },
@@ -40,6 +42,6 @@ export const PRESET_SPLITS = [
 ];
 
 export const DEMO_RECIPIENTS = [
-  { address: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4', share: 60, label: 'Lead Developer' },
-  { address: '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', share: 40, label: 'Designer / Content' },
+  { address: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4', share: 60, label: 'Core Protocol' },
+  { address: '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2', share: 40, label: 'Design & Infra' },
 ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, Globe, PlusCircle, CheckCircle, AlertTriangle, Award, ExternalLink } from 'lucide-react';
+import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink } from 'lucide-react';
 
 export function Header({
   account,
@@ -12,7 +12,6 @@ export function Header({
   disconnectWallet,
   switchNetwork,
   toggleTargetNetwork,
-  onOpenGrantModal,
 }) {
   const isTestnet = targetNetwork.chainId === 5042002;
 
@@ -28,24 +27,32 @@ export function Header({
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div
             style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)',
+              width: '48px',
+              height: '48px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #00f0ff 0%, #0066ff 50%, #7928ca 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)',
-              color: 'white',
+              boxShadow: '0 0 25px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4)',
+              color: '#030712',
             }}
           >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+            <Zap size={28} fill="#030712" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #fff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <h1
+                className="electric-glow"
+                style={{
+                  fontSize: '1.6rem',
+                  fontWeight: '800',
+                  letterSpacing: '-0.02em',
+                  background: 'linear-gradient(90deg, #ffffff 0%, #00f0ff 60%, #a855f7 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 ArcSplit
               </h1>
               <span className="pulse-badge">
@@ -53,41 +60,54 @@ export function Header({
                 Arc L1 Native
               </span>
             </div>
-            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-              Zero-friction multi-party USDC payments & creator tip jars
-            </p>
+            {/* Metathesage Builder Credit */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                Built by{' '}
+                <a
+                  href="https://x.com/metathesage"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    color: '#00f0ff',
+                    fontWeight: '700',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                  }}
+                >
+                  @metathesage
+                </a>{' '}
+                for Arc Network
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Action Controls & Wallet */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Microgrants Button */}
-          <button
-            onClick={onOpenGrantModal}
-            className="btn-secondary"
+          {/* Mainnet / Testnet Switcher */}
+          <div
             style={{
-              background: 'rgba(245, 158, 11, 0.1)',
-              borderColor: 'rgba(245, 158, 11, 0.3)',
-              color: '#fbbf24',
-              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              background: 'rgba(10, 16, 32, 0.85)',
+              padding: '4px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(0, 240, 255, 0.2)',
             }}
-            title="Arc Microgrants Submission Kit"
           >
-            <Award size={16} />
-            <span>$500 Microgrant Kit</span>
-          </button>
-
-          {/* Network Switcher & Add Chain */}
-          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(15, 23, 42, 0.8)', padding: '4px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
             <button
               onClick={() => toggleTargetNetwork(false)}
               style={{
                 padding: '6px 12px',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '0.78rem',
-                fontWeight: '600',
-                color: !isTestnet ? '#0ea5e9' : 'var(--text-dim)',
-                background: !isTestnet ? 'rgba(14, 165, 233, 0.15)' : 'transparent',
+                fontWeight: '700',
+                color: !isTestnet ? '#00f0ff' : 'var(--text-dim)',
+                background: !isTestnet ? 'rgba(0, 240, 255, 0.18)' : 'transparent',
+                boxShadow: !isTestnet ? '0 0 10px rgba(0, 240, 255, 0.2)' : 'none',
               }}
             >
               Mainnet
@@ -98,16 +118,17 @@ export function Header({
                 padding: '6px 12px',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '0.78rem',
-                fontWeight: '600',
+                fontWeight: '700',
                 color: isTestnet ? '#a855f7' : 'var(--text-dim)',
-                background: isTestnet ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
+                background: isTestnet ? 'rgba(168, 85, 247, 0.18)' : 'transparent',
+                boxShadow: isTestnet ? '0 0 10px rgba(168, 85, 247, 0.2)' : 'none',
               }}
             >
               Testnet
             </button>
           </div>
 
-          {/* Add Arc to Wallet Button */}
+          {/* Add Arc to Wallet */}
           <button
             onClick={() => switchNetwork(targetNetwork)}
             className="btn-secondary"
@@ -115,7 +136,7 @@ export function Header({
             title={`Add ${targetNetwork.name} (Chain ID ${targetNetwork.chainId}) to your wallet`}
           >
             <PlusCircle size={15} />
-            <span>Add Arc to Wallet</span>
+            <span>Add Arc Network</span>
           </button>
 
           {/* Wallet Status / Connect Button */}
@@ -131,7 +152,7 @@ export function Header({
                     padding: '8px 12px',
                     borderRadius: 'var(--radius-md)',
                     fontSize: '0.82rem',
-                    fontWeight: '600',
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
@@ -143,16 +164,17 @@ export function Header({
               ) : (
                 <div
                   style={{
-                    background: 'rgba(16, 185, 129, 0.1)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                    color: '#34d399',
+                    background: 'rgba(0, 240, 255, 0.1)',
+                    border: '1px solid rgba(0, 240, 255, 0.3)',
+                    color: '#00f0ff',
                     padding: '6px 12px',
                     borderRadius: 'var(--radius-md)',
                     fontSize: '0.82rem',
-                    fontWeight: '600',
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
+                    boxShadow: '0 0 12px rgba(0, 240, 255, 0.15)',
                   }}
                 >
                   <CheckCircle size={14} />
@@ -162,7 +184,7 @@ export function Header({
 
               <div
                 style={{
-                  background: 'rgba(15, 23, 42, 0.85)',
+                  background: 'rgba(10, 16, 32, 0.9)',
                   border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-md)',
                   padding: '6px 12px',
@@ -172,7 +194,7 @@ export function Header({
                 }}
               >
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#38bdf8' }}>
+                  <div style={{ fontSize: '0.84rem', fontWeight: '800', color: '#00f0ff' }}>
                     {balance} USDC
                   </div>
                   <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>

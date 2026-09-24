@@ -1,12 +1,11 @@
 # ArcSplit ⚡
 
-> **Instant, non-custodial multi-party USDC payments and creator tip jars powered by Arc Network's native USDC gas.**
-
-Built for the **Arc Network Microgrants Program** (20 x $500 USDC | Submission Deadline: October 14, 2026).
+> **High-voltage, non-custodial multi-party USDC payments and creator tip jars powered by Arc Network's native USDC gas.**  
+> **Built by [@metathesage](https://x.com/metathesage) for the Arc Network Ecosystem.**
 
 ---
 
-## 🌟 Overview
+## ⚡ Overview
 
 On traditional chains (Ethereum, Arbitrum, Base), distributing payments across multiple wallets requires:
 1. Swapping for or holding volatile native gas tokens (ETH).
@@ -19,8 +18,9 @@ On traditional chains (Ethereum, Arbitrum, Base), distributing payments across m
 - **Zero Token Approvals:** Send native USDC directly into `ArcSplit.sol` without requiring ERC-20 allowances.
 - **Predictable Sub-Cent Gas:** Gas is paid natively in fractional USDC.
 - **Atomic 100.00% Precision:** Configurable basis points (up to 10,000 bps) ensure exact mathematical payouts to contributors, co-founders, or affiliates.
-- **Shareable Tip Jars & Invoices:** Encode split recipients directly into URL query parameters (e.g. `?split=0x...:60;0x...:40&memo=PodcastTips`) so anyone can tip or settle an invoice with 1 click.
+- **Shareable Permalinks & Invoices:** Encode split recipients directly into URL query parameters (e.g. `?split=0x...:60;0x...:40&memo=PodcastTips`) so anyone can tip or settle an invoice with 1 click.
 - **On-Chain Memos:** Emits `PaymentSplit` events containing invoice references and memo notes.
+- **Interactive Lightning Scene:** High-voltage Web3 interface with procedural lightning bolts and real-time audio arc synthesis.
 
 ---
 
@@ -52,7 +52,7 @@ Located in `contracts/ArcSplit.sol`.
 ```bash
 node scripts/compile.cjs
 ```
-Compiles with `viaIR: true` and 200 optimizer runs, outputting ABI and bytecode to `src/contracts/ArcSplitData.json`.
+Compiles with `viaIR: true` and 200 optimizer runs, outputting ABI and 0x-prefixed bytecode to `src/contracts/ArcSplitData.json`.
 
 ---
 
@@ -75,7 +75,7 @@ node scripts/deploy.cjs --network testnet --private-key <YOUR_PRIVATE_KEY>
 
 ---
 
-## 💻 Running the Web Application Locally
+## 💻 Running Locally
 
 ```bash
 # Install dependencies
@@ -90,15 +90,9 @@ npm run build
 
 ---
 
-## 🏆 Arc Microgrant Submission Kit
-
-| Field | Submission Details |
-| :--- | :--- |
-| **Project Name** | **ArcSplit** |
-| **Tagline** | Instant, non-custodial multi-party USDC payments and creator tip jars powered by Arc Network's native USDC gas. |
-| **Arc Mainnet Contract** | `0x8A14c33076e0c651F10705E3f757270275C68b81` (or your deployed address via the Deployer tab) |
-| **Target Grant** | Arc Microgrants ($500 USDC) |
-| **Ecosystem Value** | Showcases Arc’s primary superpower (USDC native gas) for consumer, creator, and B2B payout use cases that are cost-prohibitive on other networks. |
+## ⚡ Creator & Ecosystem Credits
+- **Architect & Developer:** [@metathesage](https://x.com/metathesage)
+- **Target Network:** [Arc Network](https://arc.io)
 
 ---
 

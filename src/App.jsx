@@ -4,21 +4,21 @@ import { Header } from './components/Header';
 import { SplitBuilder } from './components/SplitBuilder';
 import { TipJarGenerator } from './components/TipJarGenerator';
 import { ContractDeployer } from './components/ContractDeployer';
-import { MicrograntChecklistModal } from './components/MicrograntChecklistModal';
 import { SuccessModal } from './components/SuccessModal';
-import { Sliders, Share2, Rocket, FileText, Heart, Sparkles, ExternalLink, ShieldCheck, Zap } from 'lucide-react';
+import { LightningCanvas } from './components/LightningCanvas';
+import { Sliders, Share2, Rocket, FileText, Heart, Zap, Sparkles, ExternalLink, ShieldCheck } from 'lucide-react';
 import { DEMO_RECIPIENTS } from './config/constants';
 
 export function App() {
   const web3 = useWeb3();
 
   const [activeTab, setActiveTab] = useState('split');
-  const [isGrantModalOpen, setIsGrantModalOpen] = useState(false);
   const [successData, setSuccessData] = useState(null);
+  const [lightningIntensity, setLightningIntensity] = useState('storm'); // calm, storm, supercharge
 
   // Incoming payment link query state
   const [incomingSplit, setIncomingSplit] = useState(null);
-  const [activeMemo, setActiveMemo] = useState('Arc Network Grant / Collaborative Sprint');
+  const [activeMemo, setActiveMemo] = useState('High-Voltage Arc USDC Payment');
   const [activeRecipients, setActiveRecipients] = useState(DEMO_RECIPIENTS);
 
   // Check URL parameters for shareable split link
@@ -41,7 +41,7 @@ export function App() {
         if (parsedRecipients.length > 0) {
           setIncomingSplit({
             recipients: parsedRecipients,
-            memo: memoParam || 'Project Tip Jar',
+            memo: memoParam || 'Project Payment',
           });
           setActiveRecipients(parsedRecipients);
           if (memoParam) setActiveMemo(memoParam);
@@ -59,288 +59,354 @@ export function App() {
   };
 
   return (
-    <div className="app-container">
-      {/* Header */}
-      <Header
-        account={web3.account}
-        chainId={web3.chainId}
-        balance={web3.balance}
-        isConnecting={web3.isConnecting}
-        isArc={web3.isArc}
-        targetNetwork={web3.targetNetwork}
-        connectWallet={web3.connectWallet}
-        disconnectWallet={web3.disconnectWallet}
-        switchNetwork={web3.switchNetwork}
-        toggleTargetNetwork={web3.toggleTargetNetwork}
-        onOpenGrantModal={() => setIsGrantModalOpen(true)}
-      />
+    <>
+      {/* Background Interactive Lightning Storm Scene */}
+      <LightningCanvas intensity={lightningIntensity} />
 
-      {/* Incoming Shareable Link Banner (if loaded with ?split=) */}
-      {incomingSplit && (
-        <div
-          style={{
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%)',
-            border: '1px solid rgba(139, 92, 246, 0.4)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '16px 20px',
-            marginBottom: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: '#a855f7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-              }}
-            >
-              <Heart size={20} fill="white" />
-            </div>
-            <div>
-              <div style={{ fontSize: '0.95rem', fontWeight: '700', color: 'white' }}>
-                You are paying a pre-configured split: "{incomingSplit.memo}"
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                {incomingSplit.recipients.length} recipients configured. Enter your USDC amount below to execute.
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setIncomingSplit(null);
-              window.history.replaceState({}, document.title, window.location.pathname);
+      <div className="app-container">
+        {/* Header with @metathesage credits */}
+        <Header
+          account={web3.account}
+          chainId={web3.chainId}
+          balance={web3.balance}
+          isConnecting={web3.isConnecting}
+          isArc={web3.isArc}
+          targetNetwork={web3.targetNetwork}
+          connectWallet={web3.connectWallet}
+          disconnectWallet={web3.disconnectWallet}
+          switchNetwork={web3.switchNetwork}
+          toggleTargetNetwork={web3.toggleTargetNetwork}
+        />
+
+        {/* Incoming Shareable Link Banner (if loaded with ?split=) */}
+        {incomingSplit && (
+          <div
+            style={{
+              background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.12) 0%, rgba(121, 40, 202, 0.18) 100%)',
+              border: '1px solid rgba(0, 240, 255, 0.4)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '16px 20px',
+              marginBottom: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '12px',
+              boxShadow: '0 0 30px rgba(0, 240, 255, 0.15)',
             }}
-            className="btn-secondary"
-            style={{ fontSize: '0.78rem', padding: '6px 12px' }}
           >
-            Clear / New Split
-          </button>
-        </div>
-      )}
-
-      {/* Hero Value Banner */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(13, 18, 29, 0.6) 100%)',
-          border: '1px solid var(--border-glow)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '24px',
-          marginBottom: '28px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '20px',
-          alignItems: 'center',
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Zap size={18} color="#0ea5e9" />
-            <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Built for Arc Network
-            </span>
-          </div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: '800', color: 'white', lineHeight: '1.3', marginBottom: '8px' }}>
-            Native USDC Splits. Sub-Cent Gas. Zero Wrapping.
-          </h2>
-          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-            Arc is Circle's stablecoin-native Layer-1 where USDC powers transaction fees. ArcSplit eliminates approval txs, paying out multiple parties in a single atomic hop.
-          </p>
-        </div>
-
-        {/* Feature Highlights Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Zero Approvals</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#f8fafc' }}>Direct Native USDC</div>
-          </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Precision Splitting</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#10b981' }}>100.00% Basis Points</div>
-          </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Non-Custodial</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#38bdf8' }}>Instant Pass-Through</div>
-          </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Grant Deadline</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#fbbf24' }}>Oct 14, 2026</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Pill Navigation Tabs */}
-      <nav className="tabs-nav">
-        <button
-          onClick={() => setActiveTab('split')}
-          className={`tab-btn ${activeTab === 'split' ? 'active' : ''}`}
-        >
-          <Sliders size={16} />
-          <span>Instant Split</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('tipjar')}
-          className={`tab-btn ${activeTab === 'tipjar' ? 'active' : ''}`}
-        >
-          <Share2 size={16} />
-          <span>Creator Tip Jar</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('deployer')}
-          className={`tab-btn ${activeTab === 'deployer' ? 'active' : ''}`}
-        >
-          <Rocket size={16} />
-          <span>Contract Deployer</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('docs')}
-          className={`tab-btn ${activeTab === 'docs' ? 'active' : ''}`}
-        >
-          <FileText size={16} />
-          <span>Architecture & Docs</span>
-        </button>
-      </nav>
-
-      {/* Main Tab Content */}
-      <main>
-        {activeTab === 'split' && (
-          <SplitBuilder
-            account={web3.account}
-            isArc={web3.isArc}
-            targetNetwork={web3.targetNetwork}
-            connectWallet={web3.connectWallet}
-            switchNetwork={web3.switchNetwork}
-            executeSplit={web3.executeSplit}
-            onPaymentSuccess={(data) => setSuccessData(data)}
-            onGenerateTipJar={handleGenerateTipJar}
-          />
-        )}
-
-        {activeTab === 'tipjar' && (
-          <TipJarGenerator
-            currentRecipients={activeRecipients}
-            currentMemo={activeMemo}
-          />
-        )}
-
-        {activeTab === 'deployer' && (
-          <ContractDeployer
-            account={web3.account}
-            isArc={web3.isArc}
-            targetNetwork={web3.targetNetwork}
-            deployedContractAddress={web3.deployedContractAddress}
-            setCustomContract={web3.setCustomContract}
-            resetContract={web3.resetContract}
-            deployFreshContract={web3.deployFreshContract}
-            connectWallet={web3.connectWallet}
-            switchNetwork={web3.switchNetwork}
-          />
-        )}
-
-        {activeTab === 'docs' && (
-          <div className="glass-panel" style={{ padding: '28px' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'white', marginBottom: '16px' }}>
-              ArcSplit Technical Specification & Architecture
-            </h2>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-              <div>
-                <h3 style={{ color: 'white', fontSize: '1rem', fontWeight: '600', marginBottom: '6px' }}>
-                  1. Stablecoin-Native Execution
-                </h3>
-                <p>
-                  Arc is Circle's L1 designed around digital dollar rails. By utilizing USDC as its native gas currency, transactions do not require secondary gas token swapping (no ETH required) or standard ERC-20 approve/transferFrom steps for payments.
-                </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #00f0ff 0%, #a855f7 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#030712',
+                }}
+              >
+                <Heart size={20} fill="#030712" />
               </div>
-
               <div>
-                <h3 style={{ color: 'white', fontSize: '1rem', fontWeight: '600', marginBottom: '6px' }}>
-                  2. ArcSplit.sol Contract Safety
-                </h3>
-                <p>
-                  The contract is stateless and non-custodial. Funds are not held in custody; they are distributed directly in the same execution frame using <code className="mono" style={{ color: '#38bdf8' }}>call&#123;value: amount&#125;("")</code> to each recipient. Remainder fractions are safely routed to avoid stuck capital.
-                </p>
-              </div>
-
-              <div>
-                <h3 style={{ color: 'white', fontSize: '1rem', fontWeight: '600', marginBottom: '6px' }}>
-                  3. Network Parameters for Arc
-                </h3>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-                  <div className="mono" style={{ fontSize: '0.8rem', color: '#93c5fd' }}>
-                    Network: Arc Mainnet<br />
-                    Chain ID: 5042 (0x13b2)<br />
-                    RPC: https://rpc.mainnet.arc.io<br />
-                    Currency: USDC<br />
-                    Explorer: https://explorer.arc.io
-                  </div>
+                <div style={{ fontSize: '0.96rem', fontWeight: '800', color: 'white' }}>
+                  Pre-Configured Split: "{incomingSplit.memo}"
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  {incomingSplit.recipients.length} recipients locked in. Enter total USDC amount below to execute.
                 </div>
               </div>
-
-              <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-                <button
-                  onClick={() => setIsGrantModalOpen(true)}
-                  className="btn-primary"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  View $500 Microgrant Form Kit
-                </button>
-                <a
-                  href="https://www.arc.io/app-kits"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-secondary"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  <ExternalLink size={14} />
-                  <span>Arc App Kits Documentation</span>
-                </a>
-              </div>
             </div>
+            <button
+              onClick={() => {
+                setIncomingSplit(null);
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }}
+              className="btn-secondary"
+              style={{ fontSize: '0.78rem', padding: '6px 12px' }}
+            >
+              Clear / Reset
+            </button>
           </div>
         )}
-      </main>
 
-      {/* Footer */}
-      <footer style={{ marginTop: '50px', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '24px' }}>
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-dim)', marginBottom: '8px' }}>
-          ArcSplit — Built for the Arc Network Microgrants Program ($500 USDC | Deadline Oct 14, 2026)
-        </p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          <a href="https://www.arc.io/app-kits" target="_blank" rel="noreferrer" style={{ color: '#0ea5e9' }}>
-            Arc App Kits
-          </a>
-          <span>•</span>
-          <a href="https://explorer.arc.io" target="_blank" rel="noreferrer" style={{ color: '#0ea5e9' }}>
-            Arc Explorer
-          </a>
-          <span>•</span>
-          <span style={{ color: 'var(--text-dim)' }}>Native USDC Gas</span>
+        {/* High-Voltage Hero Banner */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(10, 16, 32, 0.75) 50%, rgba(121, 40, 202, 0.08) 100%)',
+            border: '1px solid rgba(0, 240, 255, 0.3)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '28px',
+            marginBottom: '28px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px',
+            alignItems: 'center',
+            boxShadow: '0 0 35px rgba(0, 240, 255, 0.1)',
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+              <Zap size={18} color="#00f0ff" />
+              <span style={{ fontSize: '0.84rem', fontWeight: '800', color: '#00f0ff', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Electric Financial Rails • Arc L1
+              </span>
+            </div>
+            <h2
+              className="electric-glow"
+              style={{
+                fontSize: '1.65rem',
+                fontWeight: '900',
+                color: 'white',
+                lineHeight: '1.25',
+                marginBottom: '10px',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              High-Voltage USDC Splits with Sub-Cent Gas.
+            </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+              On Arc, USDC is the native gas token. Zero approvals, zero volatile gas tokens, and lightning-fast atomic distribution to unlimited wallets in a single block.
+            </p>
+
+            {/* Storm Intensity Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: '600' }}>⚡ Lightning Scene:</span>
+              {['calm', 'storm', 'supercharge'].map((lvl) => (
+                <button
+                  key={lvl}
+                  onClick={() => setLightningIntensity(lvl)}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '0.74rem',
+                    fontWeight: '700',
+                    textTransform: 'capitalize',
+                    background: lightningIntensity === lvl ? 'rgba(0, 240, 255, 0.22)' : 'rgba(255, 255, 255, 0.04)',
+                    border: lightningIntensity === lvl ? '1px solid #00f0ff' : '1px solid var(--border-subtle)',
+                    color: lightningIntensity === lvl ? '#00f0ff' : 'var(--text-muted)',
+                    boxShadow: lightningIntensity === lvl ? '0 0 10px rgba(0, 240, 255, 0.3)' : 'none',
+                  }}
+                >
+                  {lvl}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Metrics Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Gas Token</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#00f0ff' }}>Native USDC</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Zero approvals needed</div>
+            </div>
+            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Precision</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#10b981' }}>100.00% Exact</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>10,000 basis points</div>
+            </div>
+            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Security</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#38bdf8' }}>Non-Custodial</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Direct atomic transfer</div>
+            </div>
+            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Built By</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#a855f7' }}>@metathesage</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Arc Network ecosystem</div>
+            </div>
+          </div>
         </div>
-      </footer>
 
-      {/* Modals */}
-      <MicrograntChecklistModal
-        isOpen={isGrantModalOpen}
-        onClose={() => setIsGrantModalOpen(false)}
-        activeContract={web3.deployedContractAddress}
-      />
+        {/* Pill Navigation Tabs */}
+        <nav className="tabs-nav">
+          <button
+            onClick={() => setActiveTab('split')}
+            className={`tab-btn ${activeTab === 'split' ? 'active' : ''}`}
+          >
+            <Sliders size={16} />
+            <span>Instant Split</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('tipjar')}
+            className={`tab-btn ${activeTab === 'tipjar' ? 'active' : ''}`}
+          >
+            <Share2 size={16} />
+            <span>Payment Permalinks</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('deployer')}
+            className={`tab-btn ${activeTab === 'deployer' ? 'active' : ''}`}
+          >
+            <Rocket size={16} />
+            <span>Contract Deployer</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('docs')}
+            className={`tab-btn ${activeTab === 'docs' ? 'active' : ''}`}
+          >
+            <FileText size={16} />
+            <span>Protocol Specs</span>
+          </button>
+        </nav>
 
-      <SuccessModal
-        isOpen={!!successData}
-        onClose={() => setSuccessData(null)}
-        data={successData}
-      />
-    </div>
+        {/* Main Tab Content */}
+        <main>
+          {activeTab === 'split' && (
+            <SplitBuilder
+              account={web3.account}
+              isArc={web3.isArc}
+              targetNetwork={web3.targetNetwork}
+              connectWallet={web3.connectWallet}
+              switchNetwork={web3.switchNetwork}
+              executeSplit={web3.executeSplit}
+              onPaymentSuccess={(data) => setSuccessData(data)}
+              onGenerateTipJar={handleGenerateTipJar}
+              onNavigateDeployer={() => setActiveTab('deployer')}
+            />
+          )}
+
+          {activeTab === 'tipjar' && (
+            <TipJarGenerator
+              currentRecipients={activeRecipients}
+              currentMemo={activeMemo}
+            />
+          )}
+
+          {activeTab === 'deployer' && (
+            <ContractDeployer
+              account={web3.account}
+              isArc={web3.isArc}
+              targetNetwork={web3.targetNetwork}
+              deployedContractAddress={web3.deployedContractAddress}
+              setCustomContract={web3.setCustomContract}
+              resetContract={web3.resetContract}
+              deployFreshContract={web3.deployFreshContract}
+              connectWallet={web3.connectWallet}
+              switchNetwork={web3.switchNetwork}
+            />
+          )}
+
+          {activeTab === 'docs' && (
+            <div className="glass-panel" style={{ padding: '28px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                <Zap size={24} color="#00f0ff" />
+                <h2 style={{ fontSize: '1.3rem', fontWeight: '800', color: 'white' }}>
+                  ArcSplit Protocol Specification & High-Voltage Architecture
+                </h2>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+                <div>
+                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
+                    1. The Power of Native USDC Gas
+                  </h3>
+                  <p>
+                    Arc is Circle's stablecoin-native Layer-1 designed specifically for programmable digital dollar finance. Unlike standard EVM rollups or L1s where users must hold volatile gas tokens (ETH/SOL/MATIC) and submit two transactions (approve + transfer), Arc transactions are paid directly in native USDC. ArcSplit takes full advantage of this to deliver zero-approval, single-click payouts.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
+                    2. Mathematical Precision & Safety
+                  </h3>
+                  <p>
+                    Allocations are defined in basis points (10,000 bps = 100.00%). Each recipient receives <code className="mono" style={{ color: '#00f0ff' }}>(msg.value * basisPoints[i]) / 10000</code>. Any fractional integer remainder from integer division is automatically forwarded to the primary recipient, guaranteeing zero locked wei.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
+                    3. Network Connectivity
+                  </h3>
+                  <div style={{ background: 'rgba(5, 8, 16, 0.85)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
+                    <div className="mono" style={{ fontSize: '0.82rem', color: '#00f0ff', lineHeight: '1.7' }}>
+                      • Network: Arc Mainnet<br />
+                      • Chain ID: 5042 (0x13b2)<br />
+                      • RPC: https://rpc.mainnet.arc.io<br />
+                      • Native Gas Currency: USDC<br />
+                      • Explorer: https://explorer.arc.io
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                  <a
+                    href="https://explorer.arc.io"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    <span>View Arc Explorer</span>
+                    <ExternalLink size={14} />
+                  </a>
+                  <a
+                    href="https://x.com/metathesage"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-secondary"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    <span>Follow @metathesage</span>
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+
+        {/* Footer with @metathesage branding */}
+        <footer style={{ marginTop: '55px', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '28px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '10px' }}>
+            <Zap size={18} color="#00f0ff" />
+            <span style={{ fontSize: '0.9rem', fontWeight: '800', color: 'white' }}>
+              ArcSplit
+            </span>
+            <span style={{ color: 'var(--text-dim)' }}>•</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              Built by{' '}
+              <a
+                href="https://x.com/metathesage"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: '#00f0ff',
+                  fontWeight: '700',
+                  textDecoration: 'none',
+                }}
+              >
+                @metathesage
+              </a>{' '}
+              for the Arc Network Ecosystem
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+            <a href="https://explorer.arc.io" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
+              Arc Explorer
+            </a>
+            <span>•</span>
+            <a href="https://arc.io" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
+              Arc Network
+            </a>
+            <span>•</span>
+            <span>USDC Native Gas Rails</span>
+          </div>
+        </footer>
+
+        {/* Success Modal */}
+        <SuccessModal
+          isOpen={!!successData}
+          onClose={() => setSuccessData(null)}
+          data={successData}
+        />
+      </div>
+    </>
   );
 }
 

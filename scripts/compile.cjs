@@ -46,7 +46,8 @@ if (output.errors) {
 
 const contract = output.contracts['ArcSplit.sol']['ArcSplit'];
 const abi = contract.abi;
-const bytecode = contract.evm.bytecode.object;
+const rawBytecode = contract.evm.bytecode.object;
+const bytecode = rawBytecode.startsWith('0x') ? rawBytecode : `0x${rawBytecode}`;
 
 const outDir = path.resolve(__dirname, '../src/contracts');
 if (!fs.existsSync(outDir)) {
@@ -58,4 +59,4 @@ fs.writeFileSync(
   JSON.stringify({ abi, bytecode }, null, 2)
 );
 
-console.log('Successfully compiled ArcSplit! Output saved to src/contracts/ArcSplitData.json');
+console.log('Successfully compiled ArcSplit! Bytecode with 0x prefix saved to src/contracts/ArcSplitData.json');
