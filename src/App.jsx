@@ -4,9 +4,10 @@ import { Header } from './components/Header';
 import { SplitBuilder } from './components/SplitBuilder';
 import { TipJarGenerator } from './components/TipJarGenerator';
 import { ContractDeployer } from './components/ContractDeployer';
+import { AgenticSplitter } from './components/AgenticSplitter';
 import { SuccessModal } from './components/SuccessModal';
 import { LightningCanvas } from './components/LightningCanvas';
-import { Sliders, Share2, Rocket, FileText, Heart, Zap, Sparkles, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink } from 'lucide-react';
 import { DEMO_RECIPIENTS } from './config/constants';
 
 export function App() {
@@ -14,7 +15,7 @@ export function App() {
 
   const [activeTab, setActiveTab] = useState('split');
   const [successData, setSuccessData] = useState(null);
-  const [lightningIntensity, setLightningIntensity] = useState('storm'); // calm, storm, supercharge
+  const [lightningIntensity, setLightningIntensity] = useState('storm');
 
   // Incoming payment link query state
   const [incomingSplit, setIncomingSplit] = useState(null);
@@ -56,6 +57,12 @@ export function App() {
     setActiveRecipients(recipients);
     setActiveMemo(memo);
     setActiveTab('tipjar');
+  };
+
+  const handleLoadAgentPreset = (preset) => {
+    setActiveRecipients(preset.recipients);
+    setActiveMemo(preset.memo);
+    setActiveTab('split');
   };
 
   return (
@@ -165,10 +172,10 @@ export function App() {
                 letterSpacing: '-0.02em',
               }}
             >
-              High-Voltage USDC Splits with Sub-Cent Gas.
+              High-Voltage USDC Splits for Humans & AI Agents.
             </h2>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-              On Arc, USDC is the native gas token. Zero approvals, zero volatile gas tokens, and lightning-fast atomic distribution to unlimited wallets in a single block.
+              Built for Arc’s Agentic Economy (ERC-8004 / ERC-8183). Route native USDC payouts across AI swarms and human teams with sub-second finality and sub-cent fees.
             </p>
 
             {/* Storm Intensity Selector */}
@@ -204,14 +211,14 @@ export function App() {
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Zero approvals needed</div>
             </div>
             <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Precision</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#10b981' }}>100.00% Exact</div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>10,000 basis points</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Agent Standards</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#10b981' }}>ERC-8004 / 8183</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Autonomous job splits</div>
             </div>
             <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Security</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#38bdf8' }}>Non-Custodial</div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Direct atomic transfer</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#38bdf8' }}>Audited & Guarded</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>OpenZeppelin ReentrancyGuard</div>
             </div>
             <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Built By</div>
@@ -229,6 +236,13 @@ export function App() {
           >
             <Sliders size={16} />
             <span>Instant Split</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('agent')}
+            className={`tab-btn ${activeTab === 'agent' ? 'active' : ''}`}
+          >
+            <Bot size={16} />
+            <span>Agentic Economy</span>
           </button>
           <button
             onClick={() => setActiveTab('tipjar')}
@@ -267,6 +281,10 @@ export function App() {
               onGenerateTipJar={handleGenerateTipJar}
               onNavigateDeployer={() => setActiveTab('deployer')}
             />
+          )}
+
+          {activeTab === 'agent' && (
+            <AgenticSplitter onLoadPreset={handleLoadAgentPreset} />
           )}
 
           {activeTab === 'tipjar' && (
@@ -320,28 +338,22 @@ export function App() {
 
                 <div>
                   <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
-                    3. Network Connectivity
+                    3. Agentic Economy Compatibility
                   </h3>
-                  <div style={{ background: 'rgba(5, 8, 16, 0.85)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.2)' }}>
-                    <div className="mono" style={{ fontSize: '0.82rem', color: '#00f0ff', lineHeight: '1.7' }}>
-                      • Network: Arc Mainnet<br />
-                      • Chain ID: 5042 (0x13b2)<br />
-                      • RPC: https://rpc.mainnet.arc.io<br />
-                      • Native Gas Currency: USDC<br />
-                      • Explorer: https://explorer.arc.io
-                    </div>
-                  </div>
+                  <p>
+                    ArcSplit natively integrates with Arc’s <strong>ERC-8004</strong> (Agent Identity & Reputation) and <strong>ERC-8183</strong> (Job Escrows), enabling AI agents to programmatically distribute bounties and API fees.
+                  </p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
                   <a
-                    href="https://explorer.arc.io"
+                    href="https://docs.arc.io/build/agentic-economy"
                     target="_blank"
                     rel="noreferrer"
                     className="btn-primary"
                     style={{ fontSize: '0.85rem' }}
                   >
-                    <span>View Arc Explorer</span>
+                    <span>Read Arc Agentic Economy Docs</span>
                     <ExternalLink size={14} />
                   </a>
                   <a
@@ -387,6 +399,10 @@ export function App() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+            <a href="https://docs.arc.io/build/agentic-economy" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
+              Arc Agentic Economy
+            </a>
+            <span>•</span>
             <a href="https://explorer.arc.io" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
               Arc Explorer
             </a>
