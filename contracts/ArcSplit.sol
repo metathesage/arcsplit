@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 /**
  * @title ArcSplit
  * @notice Multi-party USDC Split-Payment & Creator Tip Jar on Arc Network.
@@ -13,9 +15,10 @@ interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
 }
 
-contract ArcSplit {
+contract ArcSplit is ReentrancyGuard {
     // 10,000 basis points = 100.00%
     uint256 public constant TOTAL_BASIS_POINTS = 10000;
+    uint256 public constant MAX_RECIPIENTS = 50;
 
     event PaymentSplit(
         address indexed payer,
@@ -41,9 +44,11 @@ contract ArcSplit {
     error ZeroAmount();
     error TransferFailed(address recipient);
     error InvalidRecipient(address recipient);
+    error TooManyRecipients();
 
     /**
      * @notice Splits native Arc currency (USDC) among multiple recipients based on basis points.
+     * @dev On Arc Network, msg.value is denominated in the native gas token, which is USDC at 18 decimals. Do NOT pass an amount denominated in ERC-20 USDC (6 decimals) — a 1 USDC intent expressed as 1e6 will be treated as 0.000001 USDC worth of native value.
      * @param recipients Array of recipient addresses.
      * @param basisPoints Array of basis points for each recipient (must sum to 10,000).
      * @param memo Optional on-chain message or invoice identifier.
@@ -52,9 +57,10 @@ contract ArcSplit {
         address[] calldata recipients,
         uint256[] calldata basisPoints,
         string calldata memo
-    ) external payable {
+    ) external payable nonReentrant {
         uint256 len = recipients.length;
         if (len == 0 || len != basisPoints.length) revert InvalidLength();
+        if (len > MAX_RECIPIENTS) revert TooManyRecipients();
         if (msg.value == 0) revert ZeroAmount();
 
         _validateBasisPoints(recipients, basisPoints);
@@ -77,9 +83,8 @@ contract ArcSplit {
         uint256 remainder = msg.value - distributed;
         if (remainder > 0) {
             (bool success, ) = payable(recipients[0]).call{value: remainder}("");
-            if (success) {
-                amounts[0] += remainder;
-            }
+            if (!success) revert TransferFailed(recipients[0]);
+            amounts[0] += remainder;
         }
 
         emit PaymentSplit(msg.sender, recipients, amounts, memo, msg.value, block.timestamp);
@@ -87,6 +92,7 @@ contract ArcSplit {
 
     /**
      * @notice Splits ERC-20 tokens among multiple recipients based on basis points.
+     * @dev totalAmount must be denominated in the ERC-20 token's own decimal precision (e.g. 6 decimals for USDC). On Arc Network the native USDC (msg.value path) uses 18 decimals — do NOT mix the two representations.
      */
     function splitERC20(
         address token,
@@ -94,9 +100,10 @@ contract ArcSplit {
         uint256[] calldata basisPoints,
         uint256 totalAmount,
         string calldata memo
-    ) external {
+    ) external nonReentrant {
         uint256 len = recipients.length;
         if (len == 0 || len != basisPoints.length) revert InvalidLength();
+        if (len > MAX_RECIPIENTS) revert TooManyRecipients();
         if (totalAmount == 0) revert ZeroAmount();
 
         _validateBasisPoints(recipients, basisPoints);
@@ -121,7 +128,8 @@ contract ArcSplit {
 
         uint256 remainder = totalAmount - distributed;
         if (remainder > 0) {
-            IERC20(token).transfer(recipients[0], remainder);
+            bool sent = IERC20(token).transfer(recipients[0], remainder);
+            if (!sent) revert TransferFailed(recipients[0]);
             amounts[0] += remainder;
         }
 
@@ -144,15 +152,16 @@ contract ArcSplit {
     function calculateSplits(uint256 totalAmount, uint256[] calldata basisPoints)
         external
         pure
-        returns (uint256[] memory amounts)
+        returns (uint256[] memory amounts, uint256 remainder)
     {
         uint256 len = basisPoints.length;
         amounts = new uint256[](len);
+        uint256 distributed = 0;
         for (uint256 i = 0; i < len; ) {
             amounts[i] = (totalAmount * basisPoints[i]) / TOTAL_BASIS_POINTS;
+            distributed += amounts[i];
             unchecked { ++i; }
         }
+        remainder = totalAmount - distributed;
     }
-
-    receive() external payable {}
 }
