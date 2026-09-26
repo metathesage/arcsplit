@@ -11,7 +11,7 @@ export const ARC_MAINNET = {
     symbol: 'USDC',
     decimals: 18,
   },
-  defaultContract: '0x8A14c33076e0c651F10705E3f757270275C68b81',
+  defaultContract: '0x57B02Be99573B4aD4d744278821932f5b8742535',
 };
 
 export const ARC_TESTNET = {
@@ -25,7 +25,7 @@ export const ARC_TESTNET = {
     symbol: 'USDC',
     decimals: 18,
   },
-  defaultContract: '0x9E26388C83f73619eb14f32aB56B3A8810777Ce2',
+  defaultContract: '0x3B31124377078eE939786e2765e1820Ad2C96399',
 };
 
 export const CONTRACT_ABI = contractData.abi;

@@ -1,19 +1,34 @@
 import React from 'react';
-import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink } from 'lucide-react';
+import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink, ArrowLeftRight, LogOut } from 'lucide-react';
+
+const KNOWN_CHAINS = {
+  1: 'Ethereum',
+  5042: 'Arc Mainnet',
+  5042002: 'Arc Testnet',
+  8453: 'Base',
+  42161: 'Arbitrum',
+  10: 'Optimism',
+  137: 'Polygon',
+  11155111: 'Sepolia',
+};
 
 export function Header({
   account,
   chainId,
   balance,
+  arcBalance = '0.00',
   isConnecting,
+  isSwitchingNetwork,
   isArc,
   targetNetwork,
   connectWallet,
   disconnectWallet,
   switchNetwork,
   toggleTargetNetwork,
+  openRelayBridge,
 }) {
   const isTestnet = targetNetwork.chainId === 5042002;
+  const currentChainName = KNOWN_CHAINS[chainId] || (chainId ? `Chain ${chainId}` : 'Unknown Chain');
 
   const truncateAddress = (addr) => {
     if (!addr) return '';
@@ -21,61 +36,73 @@ export function Header({
   };
 
   return (
-    <header style={{ marginBottom: '32px' }}>
+    <header style={{ marginBottom: '28px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-        {/* Brand / Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Brand / Logo with Editorial Serif Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div
             style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, #00f0ff 0%, #0066ff 50%, #7928ca 100%)',
+              width: '42px',
+              height: '42px',
+              borderRadius: 'var(--radius-sm)',
+              background: 'linear-gradient(135deg, #0b1220 0%, #03060d 100%)',
+              backgroundImage: 'var(--dither-fine)',
+              border: '1px solid rgba(0, 240, 255, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4)',
-              color: '#030712',
+              boxShadow: '0 0 15px rgba(0, 240, 255, 0.15)',
+              color: '#00f0ff',
             }}
           >
-            <Zap size={28} fill="#030712" />
+            <Zap size={22} fill="#00f0ff" />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
               <h1
-                className="electric-glow"
                 style={{
-                  fontSize: '1.6rem',
-                  fontWeight: '800',
-                  letterSpacing: '-0.02em',
-                  background: 'linear-gradient(90deg, #ffffff 0%, #00f0ff 60%, #a855f7 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  fontFamily: 'var(--font-serif)',
+                  fontSize: '1.9rem',
+                  fontWeight: '400',
+                  letterSpacing: '-0.01em',
+                  color: '#ffffff',
+                  lineHeight: '1.1',
                 }}
               >
                 ArcSplit
               </h1>
-              <span className="pulse-badge">
-                <span className="pulse-dot"></span>
-                Arc L1 Native
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.68rem',
+                  letterSpacing: '0.05em',
+                  padding: '2px 7px',
+                  borderRadius: 'var(--radius-xs)',
+                  background: 'rgba(0, 240, 255, 0.08)',
+                  border: '1px solid rgba(0, 240, 255, 0.25)',
+                  color: '#00f0ff',
+                  textTransform: 'uppercase',
+                }}
+              >
+                L1 USDC
               </span>
             </div>
             {/* Metathesage Builder Credit */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                Built by{' '}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
+              <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', letterSpacing: '-0.01em' }}>
+                by{' '}
                 <a
                   href="https://x.com/metathesage"
                   target="_blank"
                   rel="noreferrer"
                   style={{
-                    color: '#00f0ff',
-                    fontWeight: '700',
+                    color: '#94a3b8',
                     textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '2px',
+                    fontWeight: '500',
+                    transition: 'color 0.15s ease',
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#00f0ff')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
                 >
                   @metathesage
                 </a>{' '}
@@ -85,29 +112,31 @@ export function Header({
           </div>
         </div>
 
-        {/* Action Controls & Wallet */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Mainnet / Testnet Switcher */}
+        {/* Action Controls & Wallet Navigation */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Mainnet / Testnet Segmented Reso Pill */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(10, 16, 32, 0.85)',
-              padding: '4px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(0, 240, 255, 0.2)',
+              background: 'rgba(10, 14, 24, 0.8)',
+              backgroundImage: 'var(--dither-fine)',
+              padding: '2px',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-subtle)',
             }}
           >
             <button
               onClick={() => toggleTargetNetwork(false)}
               style={{
-                padding: '6px 12px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.78rem',
-                fontWeight: '700',
-                color: !isTestnet ? '#00f0ff' : 'var(--text-dim)',
-                background: !isTestnet ? 'rgba(0, 240, 255, 0.18)' : 'transparent',
-                boxShadow: !isTestnet ? '0 0 10px rgba(0, 240, 255, 0.2)' : 'none',
+                padding: '4px 10px',
+                borderRadius: 'var(--radius-xs)',
+                fontSize: '0.74rem',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '600',
+                color: !isTestnet ? '#ffffff' : 'var(--text-dim)',
+                background: !isTestnet ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                border: !isTestnet ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid transparent',
               }}
             >
               Mainnet
@@ -115,98 +144,150 @@ export function Header({
             <button
               onClick={() => toggleTargetNetwork(true)}
               style={{
-                padding: '6px 12px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.78rem',
-                fontWeight: '700',
-                color: isTestnet ? '#a855f7' : 'var(--text-dim)',
-                background: isTestnet ? 'rgba(168, 85, 247, 0.18)' : 'transparent',
-                boxShadow: isTestnet ? '0 0 10px rgba(168, 85, 247, 0.2)' : 'none',
+                padding: '4px 10px',
+                borderRadius: 'var(--radius-xs)',
+                fontSize: '0.74rem',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '600',
+                color: isTestnet ? '#ffffff' : 'var(--text-dim)',
+                background: isTestnet ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                border: isTestnet ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid transparent',
               }}
             >
               Testnet
             </button>
           </div>
 
-          {/* Add Arc to Wallet */}
+          {/* Relay Bridge Button */}
+          {openRelayBridge && (
+            <button
+              onClick={openRelayBridge}
+              className="btn-secondary"
+              style={{
+                fontSize: '0.78rem',
+                padding: '7px 12px',
+                borderColor: 'rgba(0, 240, 255, 0.25)',
+                color: '#38bdf8',
+              }}
+              title="Bridge funds to Arc Network via Relay.link"
+            >
+              <ArrowLeftRight size={13} />
+              <span>Bridge</span>
+            </button>
+          )}
+
+          {/* Add Arc Network */}
           <button
             onClick={() => switchNetwork(targetNetwork)}
             className="btn-secondary"
-            style={{ fontSize: '0.82rem', padding: '8px 12px' }}
+            style={{ fontSize: '0.78rem', padding: '7px 12px' }}
             title={`Add ${targetNetwork.name} (Chain ID ${targetNetwork.chainId}) to your wallet`}
           >
-            <PlusCircle size={15} />
-            <span>Add Arc Network</span>
+            <PlusCircle size={13} />
+            <span>Add Arc</span>
           </button>
 
           {/* Wallet Status / Connect Button */}
           {account ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               {!isArc ? (
                 <button
                   onClick={() => switchNetwork(targetNetwork)}
+                  disabled={isSwitchingNetwork}
                   style={{
-                    background: 'rgba(239, 68, 68, 0.15)',
+                    background: 'rgba(239, 68, 68, 0.12)',
                     border: '1px solid rgba(239, 68, 68, 0.4)',
-                    color: '#f87171',
-                    padding: '8px 12px',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.82rem',
-                    fontWeight: '700',
+                    color: '#fca5a5',
+                    padding: '7px 12px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.78rem',
+                    fontWeight: '600',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
+                    cursor: 'pointer',
                   }}
+                  title={`Click to switch your wallet from ${currentChainName} to ${targetNetwork.name}`}
                 >
-                  <AlertTriangle size={15} />
-                  <span>Switch to {targetNetwork.name}</span>
+                  <AlertTriangle size={13} color="#f87171" />
+                  <span>{isSwitchingNetwork ? 'Switching...' : `Switch to Arc`}</span>
                 </button>
               ) : (
                 <div
                   style={{
-                    background: 'rgba(0, 240, 255, 0.1)',
-                    border: '1px solid rgba(0, 240, 255, 0.3)',
+                    background: 'rgba(0, 240, 255, 0.08)',
+                    border: '1px solid rgba(0, 240, 255, 0.25)',
                     color: '#00f0ff',
-                    padding: '6px 12px',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: '0.82rem',
-                    fontWeight: '700',
+                    padding: '6px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.76rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '600',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 12px rgba(0, 240, 255, 0.15)',
+                    gap: '5px',
                   }}
                 >
-                  <CheckCircle size={14} />
-                  <span>Arc ({targetNetwork.chainId})</span>
+                  <CheckCircle size={12} />
+                  <span>Arc {targetNetwork.chainId}</span>
                 </div>
               )}
 
+              {/* Balance & Address Box */}
               <div
                 style={{
-                  background: 'rgba(10, 16, 32, 0.9)',
+                  background: 'rgba(10, 14, 24, 0.85)',
+                  backgroundImage: 'var(--dither-fine)',
                   border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '6px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '5px 12px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
+                  gap: '12px',
                 }}
               >
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.84rem', fontWeight: '800', color: '#00f0ff' }}>
-                    {balance} USDC
+                  <div className="mono" style={{ fontSize: '0.84rem', fontWeight: '700', color: '#ffffff' }}>
+                    {isArc ? `${balance} USDC` : `${arcBalance} USDC`}
                   </div>
-                  <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  <div className="mono" style={{ fontSize: '0.68rem', color: isArc ? 'var(--text-dim)' : '#f59e0b' }}>
                     {truncateAddress(account)}
                   </div>
                 </div>
+
+                {/* Explicit Disconnect Button */}
                 <button
-                  onClick={disconnectWallet}
-                  style={{ color: 'var(--text-dim)', fontSize: '0.75rem', textDecoration: 'underline' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    disconnectWallet();
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    borderRadius: 'var(--radius-xs)',
+                    border: '1px solid rgba(239, 68, 68, 0.25)',
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    color: '#f87171',
+                    fontSize: '0.72rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.08)';
+                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.25)';
+                  }}
                   title="Disconnect wallet"
                 >
-                  Disconnect
+                  <LogOut size={12} />
+                  <span>Exit</span>
                 </button>
               </div>
             </div>
@@ -215,9 +296,9 @@ export function Header({
               onClick={connectWallet}
               disabled={isConnecting}
               className="btn-primary"
-              style={{ padding: '9px 18px', fontSize: '0.88rem' }}
+              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
             >
-              <Wallet size={16} />
+              <Wallet size={14} />
               <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
             </button>
           )}

@@ -27,35 +27,34 @@ export function TipJarGenerator({ currentRecipients, currentMemo, defaultAmount 
   };
 
   return (
-    <div className="glass-panel" style={{ padding: '28px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="glass-panel" style={{ padding: '32px' }}>
+      <div style={{ marginBottom: '28px' }}>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: '400', color: 'white', display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '-0.01em' }}>
           <Zap size={22} color="#a855f7" />
           <span>Shareable Creator Tip Jar & Payment Link</span>
         </h2>
-        <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
+        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginTop: '4px' }}>
           Generate a permanent payment permalink for your co-creators, team, or project. Anyone opening this link can split payments in native USDC with 1 click.
         </p>
       </div>
 
       {/* Share Link Box */}
       <div
+        className="apple-card"
         style={{
-          background: 'rgba(8, 13, 26, 0.75)',
-          border: '1px solid rgba(168, 85, 247, 0.3)',
-          borderRadius: 'var(--radius-md)',
-          padding: '16px 18px',
-          marginBottom: '24px',
+          padding: '18px 20px',
+          marginBottom: '28px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
+          gap: '14px',
           flexWrap: 'wrap',
-          boxShadow: '0 0 20px rgba(168, 85, 247, 0.1)',
+          background: 'rgba(168, 85, 247, 0.05)',
+          border: '1px solid rgba(168, 85, 247, 0.25)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c084fc' }}>
           <Link size={18} />
-          <span style={{ fontSize: '0.84rem', fontWeight: '700' }}>Permalink:</span>
+          <span style={{ fontSize: '0.82rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Permalink:</span>
         </div>
         <div
           className="mono"
@@ -67,10 +66,10 @@ export function TipJarGenerator({ currentRecipients, currentMemo, defaultAmount 
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            background: 'rgba(0,0,0,0.4)',
-            padding: '8px 12px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'rgba(0, 0, 0, 0.4)',
+            padding: '9px 14px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
           }}
         >
           {shareableUrl}
@@ -80,10 +79,10 @@ export function TipJarGenerator({ currentRecipients, currentMemo, defaultAmount 
           className="btn-primary"
           style={{
             background: copied ? '#10b981' : 'linear-gradient(135deg, #a855f7 0%, #0066ff 100%)',
-            padding: '10px 18px',
-            fontSize: '0.85rem',
-            boxShadow: copied ? '0 0 20px rgba(16, 185, 129, 0.4)' : '0 0 20px rgba(168, 85, 247, 0.35)',
-            color: copied ? 'white' : '#fff',
+            padding: '10px 20px',
+            fontSize: '0.86rem',
+            boxShadow: copied ? '0 0 20px rgba(16, 185, 129, 0.4)' : '0 4px 18px rgba(168, 85, 247, 0.35)',
+            color: '#fff',
           }}
         >
           {copied ? <Check size={16} /> : <Copy size={16} />}
@@ -93,59 +92,61 @@ export function TipJarGenerator({ currentRecipients, currentMemo, defaultAmount 
 
       {/* Live Preview Card */}
       <div
+        className="apple-card"
         style={{
-          border: '1px dashed rgba(168, 85, 247, 0.4)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '28px',
-          background: 'rgba(168, 85, 247, 0.04)',
+          borderRadius: 'var(--radius-xl)',
+          padding: '32px',
+          background: 'linear-gradient(180deg, rgba(168, 85, 247, 0.06) 0%, rgba(0, 113, 227, 0.03) 100%)',
+          border: '1px solid rgba(168, 85, 247, 0.22)',
           position: 'relative',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <span className="tag-badge" style={{ background: 'rgba(168, 85, 247, 0.25)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <span className="tag-badge" style={{ background: 'rgba(168, 85, 247, 0.16)', color: '#c084fc', border: '1px solid rgba(168, 85, 247, 0.35)' }}>
             Live Visitor Preview
           </span>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: '500' }}>
             Supporter Interface
           </span>
         </div>
 
-        <div style={{ textAlign: 'center', maxWidth: '460px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', maxWidth: '480px', margin: '0 auto' }}>
           <div
             style={{
-              width: '58px',
-              height: '58px',
+              width: '60px',
+              height: '60px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, #00f0ff 0%, #a855f7 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 14px',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.4)',
+              margin: '0 auto 16px',
+              boxShadow: '0 0 30px rgba(0, 240, 255, 0.35)',
               color: '#030712',
             }}
           >
             <Heart size={28} fill="#030712" />
           </div>
 
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'white', marginBottom: '6px' }}>
+          <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'white', marginBottom: '6px', letterSpacing: '-0.02em' }}>
             {currentMemo || 'Support This Project'}
           </h3>
-          <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
+          <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', marginBottom: '22px' }}>
             Instant, direct pass-through distribution on Arc Network:
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '22px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '26px' }}>
             {currentRecipients.map((r, i) => (
               <span
                 key={i}
                 style={{
                   fontSize: '0.8rem',
-                  fontWeight: '700',
-                  padding: '5px 12px',
+                  fontWeight: '600',
+                  padding: '6px 14px',
                   borderRadius: 'var(--radius-full)',
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid var(--border-subtle)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                   color: 'var(--text-main)',
                 }}
               >
@@ -160,7 +161,7 @@ export function TipJarGenerator({ currentRecipients, currentMemo, defaultAmount 
               target="_blank"
               rel="noreferrer"
               className="btn-secondary"
-              style={{ fontSize: '0.85rem', padding: '9px 16px' }}
+              style={{ fontSize: '0.86rem', padding: '9px 18px' }}
             >
               <ExternalLink size={14} />
               <span>Test Link in New Window</span>

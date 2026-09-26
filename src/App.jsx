@@ -7,7 +7,8 @@ import { ContractDeployer } from './components/ContractDeployer';
 import { AgenticSplitter } from './components/AgenticSplitter';
 import { SuccessModal } from './components/SuccessModal';
 import { LightningCanvas } from './components/LightningCanvas';
-import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink } from 'lucide-react';
+import { RelayBridgeModal } from './components/RelayBridgeModal';
+import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink, ArrowLeftRight } from 'lucide-react';
 import { DEMO_RECIPIENTS } from './config/constants';
 
 export function App() {
@@ -16,6 +17,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState('split');
   const [successData, setSuccessData] = useState(null);
   const [lightningIntensity, setLightningIntensity] = useState('storm');
+  const [isRelayOpen, setIsRelayOpen] = useState(false);
 
   // Incoming payment link query state
   const [incomingSplit, setIncomingSplit] = useState(null);
@@ -76,13 +78,16 @@ export function App() {
           account={web3.account}
           chainId={web3.chainId}
           balance={web3.balance}
+          arcBalance={web3.arcBalance}
           isConnecting={web3.isConnecting}
+          isSwitchingNetwork={web3.isSwitchingNetwork}
           isArc={web3.isArc}
           targetNetwork={web3.targetNetwork}
           connectWallet={web3.connectWallet}
           disconnectWallet={web3.disconnectWallet}
           switchNetwork={web3.switchNetwork}
           toggleTargetNetwork={web3.toggleTargetNetwork}
+          openRelayBridge={() => setIsRelayOpen(true)}
         />
 
         {/* Incoming Shareable Link Banner (if loaded with ?split=) */}
@@ -139,131 +144,195 @@ export function App() {
           </div>
         )}
 
-        {/* High-Voltage Hero Banner */}
+        {/* Reso Dithered Hero Section */}
         <div
+          className="glass-panel"
           style={{
-            background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(10, 16, 32, 0.75) 50%, rgba(121, 40, 202, 0.08) 100%)',
-            border: '1px solid rgba(0, 240, 255, 0.3)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '28px',
-            marginBottom: '28px',
+            padding: '30px',
+            marginBottom: '26px',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '24px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '26px',
             alignItems: 'center',
-            boxShadow: '0 0 35px rgba(0, 240, 255, 0.1)',
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <Zap size={18} color="#00f0ff" />
-              <span style={{ fontSize: '0.84rem', fontWeight: '800', color: '#00f0ff', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+              <div
+                style={{
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: 'var(--radius-xs)',
+                  background: 'rgba(0, 240, 255, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#00f0ff',
+                }}
+              >
+                <Zap size={13} />
+              </div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: '600', color: '#00f0ff', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 Electric Financial Rails • Arc L1
               </span>
             </div>
             <h2
-              className="electric-glow"
               style={{
-                fontSize: '1.65rem',
-                fontWeight: '900',
-                color: 'white',
-                lineHeight: '1.25',
-                marginBottom: '10px',
-                letterSpacing: '-0.02em',
+                fontFamily: 'var(--font-serif)',
+                fontSize: '2.3rem',
+                fontWeight: '400',
+                lineHeight: '1.12',
+                marginBottom: '12px',
+                letterSpacing: '-0.01em',
+                color: '#ffffff',
               }}
             >
-              High-Voltage USDC Splits for Humans & AI Agents.
+              High-Voltage USDC Splits for <span className="serif-italic" style={{ color: '#00f0ff' }}>Humans</span> & <span className="serif-italic" style={{ color: '#c084fc' }}>AI Agents</span>.
             </h2>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-              Built for Arc’s Agentic Economy (ERC-8004 / ERC-8183). Route native USDC payouts across AI swarms and human teams with sub-second finality and sub-cent fees.
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.6', letterSpacing: '-0.01em' }}>
+              Engineered for Arc's Agentic Economy (ERC-8004 / ERC-8183). Route native USDC payouts across autonomous AI swarms and human teams with sub-second finality.
             </p>
 
-            {/* Storm Intensity Selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: '600' }}>⚡ Lightning Scene:</span>
-              {['calm', 'storm', 'supercharge'].map((lvl) => (
-                <button
-                  key={lvl}
-                  onClick={() => setLightningIntensity(lvl)}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-full)',
-                    fontSize: '0.74rem',
-                    fontWeight: '700',
-                    textTransform: 'capitalize',
-                    background: lightningIntensity === lvl ? 'rgba(0, 240, 255, 0.22)' : 'rgba(255, 255, 255, 0.04)',
-                    border: lightningIntensity === lvl ? '1px solid #00f0ff' : '1px solid var(--border-subtle)',
-                    color: lightningIntensity === lvl ? '#00f0ff' : 'var(--text-muted)',
-                    boxShadow: lightningIntensity === lvl ? '0 0 10px rgba(0, 240, 255, 0.3)' : 'none',
-                  }}
-                >
-                  {lvl}
-                </button>
-              ))}
+            {/* Reso Atmosphere Switcher */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '18px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Atmosphere:</span>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  background: 'rgba(5, 8, 15, 0.7)',
+                  backgroundImage: 'var(--dither-fine)',
+                  padding: '2px',
+                  borderRadius: 'var(--radius-xs)',
+                  border: '1px solid var(--border-subtle)',
+                }}
+              >
+                {['calm', 'storm', 'supercharge'].map((lvl) => (
+                  <button
+                    key={lvl}
+                    onClick={() => setLightningIntensity(lvl)}
+                    style={{
+                      padding: '3px 10px',
+                      borderRadius: 'var(--radius-xs)',
+                      fontSize: '0.72rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: '600',
+                      textTransform: 'capitalize',
+                      background: lightningIntensity === lvl ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                      color: lightningIntensity === lvl ? '#ffffff' : 'var(--text-dim)',
+                      border: lightningIntensity === lvl ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid transparent',
+                    }}
+                  >
+                    {lvl}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Quick Metrics Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Gas Token</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#00f0ff' }}>Native USDC</div>
+          {/* Reso Dithered Metrics Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div
+              style={{
+                background: 'rgba(10, 14, 24, 0.8)',
+                backgroundImage: 'var(--dither-fine)',
+                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Gas Token</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#00f0ff', marginTop: '1px' }}>Native USDC</div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Zero approvals needed</div>
             </div>
-            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Agent Standards</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#10b981' }}>ERC-8004 / 8183</div>
+            <div
+              style={{
+                background: 'rgba(10, 14, 24, 0.8)',
+                backgroundImage: 'var(--dither-fine)',
+                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Agent Standard</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#10b981', marginTop: '1px' }}>ERC-8004 / 8183</div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Autonomous job splits</div>
             </div>
-            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Security</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#38bdf8' }}>Audited & Guarded</div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>OpenZeppelin ReentrancyGuard</div>
+            <div
+              style={{
+                background: 'rgba(10, 14, 24, 0.8)',
+                backgroundImage: 'var(--dither-fine)',
+                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Execution</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#38bdf8', marginTop: '1px' }}>Sub-Second</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Guarded non-custodial</div>
             </div>
-            <div style={{ background: 'rgba(8, 14, 28, 0.85)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 240, 255, 0.15)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Built By</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#a855f7' }}>@metathesage</div>
+            <div
+              style={{
+                background: 'rgba(10, 14, 24, 0.8)',
+                backgroundImage: 'var(--dither-fine)',
+                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+              }}
+            >
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Architect</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#c084fc', marginTop: '1px' }}>@metathesage</div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Arc Network ecosystem</div>
             </div>
           </div>
         </div>
 
-        {/* Pill Navigation Tabs */}
+        {/* Streamlined Reso Navigation Tabs */}
         <nav className="tabs-nav">
           <button
             onClick={() => setActiveTab('split')}
             className={`tab-btn ${activeTab === 'split' ? 'active' : ''}`}
           >
-            <Sliders size={16} />
-            <span>Instant Split</span>
+            <Sliders size={15} />
+            <span>Splitter</span>
           </button>
           <button
             onClick={() => setActiveTab('agent')}
             className={`tab-btn ${activeTab === 'agent' ? 'active' : ''}`}
           >
-            <Bot size={16} />
-            <span>Agentic Economy</span>
+            <Bot size={15} />
+            <span>AI Swarms</span>
           </button>
           <button
             onClick={() => setActiveTab('tipjar')}
             className={`tab-btn ${activeTab === 'tipjar' ? 'active' : ''}`}
           >
-            <Share2 size={16} />
-            <span>Payment Permalinks</span>
+            <Share2 size={15} />
+            <span>Permalinks</span>
           </button>
           <button
             onClick={() => setActiveTab('deployer')}
             className={`tab-btn ${activeTab === 'deployer' ? 'active' : ''}`}
           >
-            <Rocket size={16} />
-            <span>Contract Deployer</span>
+            <Rocket size={15} />
+            <span>Deploy</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('bridge')}
+            className={`tab-btn ${activeTab === 'bridge' ? 'active' : ''}`}
+          >
+            <ArrowLeftRight size={15} />
+            <span>Bridge</span>
           </button>
           <button
             onClick={() => setActiveTab('docs')}
             className={`tab-btn ${activeTab === 'docs' ? 'active' : ''}`}
           >
-            <FileText size={16} />
-            <span>Protocol Specs</span>
+            <FileText size={15} />
+            <span>Specs</span>
           </button>
         </nav>
 
@@ -305,6 +374,21 @@ export function App() {
               deployFreshContract={web3.deployFreshContract}
               connectWallet={web3.connectWallet}
               switchNetwork={web3.switchNetwork}
+              balance={web3.balance}
+              arcBalance={web3.arcBalance}
+              isSwitchingNetwork={web3.isSwitchingNetwork}
+              reloadBalance={web3.reloadBalance}
+              openRelayBridge={() => setIsRelayOpen(true)}
+            />
+          )}
+
+          {activeTab === 'bridge' && (
+            <RelayBridgeModal
+              isOpen={true}
+              isFullView={true}
+              account={web3.account}
+              targetNetwork={web3.targetNetwork}
+              onSuccessRefresh={web3.reloadBalance}
             />
           )}
 
@@ -420,6 +504,15 @@ export function App() {
           isOpen={!!successData}
           onClose={() => setSuccessData(null)}
           data={successData}
+        />
+
+        {/* Relay.link Bridge & Swap Modal */}
+        <RelayBridgeModal
+          isOpen={isRelayOpen}
+          onClose={() => setIsRelayOpen(false)}
+          account={web3.account}
+          targetNetwork={web3.targetNetwork}
+          onSuccessRefresh={web3.reloadBalance}
         />
       </div>
     </>

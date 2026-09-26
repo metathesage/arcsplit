@@ -47,7 +47,7 @@ import ArcSplitABI from './ArcSplit.json';
 const provider = new ethers.JsonRpcProvider('https://rpc.mainnet.arc.io');
 const agentWallet = new ethers.Wallet(process.env.AGENT_PRIVATE_KEY!, provider);
 
-const splitter = new ethers.Contract('0x8A14c33076e0c651F10705E3f757270275C68b81', ArcSplitABI, agentWallet);
+const splitter = new ethers.Contract('0x57B02Be99573B4aD4d744278821932f5b8742535', ArcSplitABI, agentWallet);
 
 async function distributeAgentRevenue() {
   const recipients = [
@@ -75,7 +75,7 @@ w3 = Web3(Web3.HTTPProvider('https://rpc.mainnet.arc.io'))
 account = w3.eth.account.from_key(os.getenv('AGENT_PRIVATE_KEY'))
 
 splitter = w3.eth.contract(
-    address='0x8A14c33076e0c651F10705E3f757270275C68b81',
+    address='0x57B02Be99573B4aD4d744278821932f5b8742535',
     abi=arc_split_abi
 )
 
@@ -109,7 +109,7 @@ print(f"⚡ Agent split transaction sent: {tx_hash.hex()}")`;
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <Bot size={24} color="#00f0ff" />
-            <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'white' }}>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: '400', color: 'white', letterSpacing: '-0.01em' }}>
               Arc Agentic Economy & Autonomous Payouts
             </h2>
             <span className="tag-badge" style={{ background: 'rgba(0, 240, 255, 0.15)', color: '#00f0ff', border: '1px solid rgba(0, 240, 255, 0.35)' }}>

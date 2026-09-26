@@ -150,34 +150,35 @@ export function SplitBuilder({
   };
 
   return (
-    <div className="glass-panel" style={{ padding: '28px' }}>
+    <div className="glass-panel" style={{ padding: '32px' }}>
       {/* Title & Presets Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
         <div>
-          <h2 style={{ fontSize: '1.3rem', fontWeight: '800', color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: '400', color: 'white', display: 'flex', alignItems: 'center', gap: '10px', letterSpacing: '-0.01em' }}>
             <Zap size={22} color="#00f0ff" />
             <span>Instant Multi-Party USDC Split</span>
           </h2>
-          <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginTop: '4px' }}>
             Route native USDC across multiple wallets simultaneously in a single atomic transaction
           </p>
         </div>
 
         {/* Quick Presets */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', marginRight: '4px' }}>Splits:</span>
+          <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontWeight: '600', marginRight: '4px' }}>Splits:</span>
           {PRESET_SPLITS.map((p) => (
             <button
               key={p.label}
               onClick={() => applyPreset(p)}
               style={{
-                fontSize: '0.75rem',
-                fontWeight: '700',
-                padding: '5px 11px',
-                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.74rem',
+                fontWeight: '600',
+                padding: '5px 12px',
+                borderRadius: 'var(--radius-full)',
                 background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-subtle)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
                 color: 'var(--text-muted)',
+                transition: 'all var(--transition-fast)',
               }}
             >
               {p.label}
@@ -187,19 +188,20 @@ export function SplitBuilder({
             onClick={equalizeShares}
             title="Distribute equally among existing recipients"
             style={{
-              fontSize: '0.75rem',
-              fontWeight: '700',
-              padding: '5px 11px',
-              borderRadius: 'var(--radius-sm)',
+              fontSize: '0.74rem',
+              fontWeight: '600',
+              padding: '5px 12px',
+              borderRadius: 'var(--radius-full)',
               background: 'rgba(0, 240, 255, 0.1)',
-              border: '1px solid rgba(0, 240, 255, 0.35)',
+              border: '1px solid rgba(0, 240, 255, 0.3)',
               color: '#00f0ff',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
+              transition: 'all var(--transition-fast)',
             }}
           >
-            <RefreshCw size={12} />
+            <RefreshCw size={11} />
             <span>Equalize</span>
           </button>
         </div>
@@ -207,25 +209,24 @@ export function SplitBuilder({
 
       {/* Total Amount Input */}
       <div
+        className="apple-card"
         style={{
-          background: 'rgba(8, 13, 26, 0.75)',
-          border: '1px solid rgba(0, 240, 255, 0.25)',
-          borderRadius: 'var(--radius-md)',
-          padding: '20px',
-          marginBottom: '24px',
+          padding: '24px',
+          marginBottom: '26px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px',
-          boxShadow: '0 0 25px rgba(0, 240, 255, 0.08)',
+          gap: '20px',
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%)',
+          border: '1px solid rgba(0, 240, 255, 0.22)',
         }}
       >
         <div style={{ flex: '1', minWidth: '220px' }}>
-          <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
             Total Distribution Amount (Native USDC)
           </label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <input
               type="number"
               step="0.01"
@@ -233,16 +234,17 @@ export function SplitBuilder({
               value={totalAmount}
               onChange={(e) => setTotalAmount(e.target.value)}
               style={{
-                fontSize: '1.55rem',
+                fontSize: '1.65rem',
                 fontWeight: '800',
-                width: '180px',
+                width: '190px',
                 padding: '8px 14px',
-                color: '#00f0ff',
-                borderColor: 'rgba(0, 240, 255, 0.4)',
+                color: '#ffffff',
+                borderColor: 'rgba(0, 240, 255, 0.35)',
+                letterSpacing: '-0.02em',
               }}
               placeholder="0.00"
             />
-            <span style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--text-main)' }}>USDC</span>
+            <span style={{ fontSize: '1.15rem', fontWeight: '800', color: '#00f0ff' }}>USDC</span>
           </div>
         </div>
 
@@ -253,14 +255,15 @@ export function SplitBuilder({
               key={amt}
               onClick={() => setTotalAmount(amt)}
               style={{
-                padding: '7px 14px',
-                borderRadius: 'var(--radius-sm)',
+                padding: '7px 15px',
+                borderRadius: 'var(--radius-full)',
                 fontSize: '0.82rem',
                 fontWeight: '700',
-                background: totalAmount === amt ? 'rgba(0, 240, 255, 0.22)' : 'rgba(255, 255, 255, 0.04)',
-                border: totalAmount === amt ? '1px solid #00f0ff' : '1px solid var(--border-subtle)',
+                background: totalAmount === amt ? 'rgba(0, 240, 255, 0.16)' : 'rgba(255, 255, 255, 0.04)',
+                border: totalAmount === amt ? '1px solid #00f0ff' : '1px solid rgba(255, 255, 255, 0.08)',
                 color: totalAmount === amt ? '#00f0ff' : 'var(--text-muted)',
-                boxShadow: totalAmount === amt ? '0 0 12px rgba(0, 240, 255, 0.25)' : 'none',
+                boxShadow: totalAmount === amt ? '0 2px 10px rgba(0, 240, 255, 0.25)' : 'none',
+                transition: 'all var(--transition-fast)',
               }}
             >
               ${amt}
@@ -270,9 +273,9 @@ export function SplitBuilder({
       </div>
 
       {/* Allocation Progress Bar */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-          <span style={{ fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-muted)' }}>
+      <div style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Voltage Allocation
           </span>
           <span
@@ -296,7 +299,7 @@ export function SplitBuilder({
                 style={{
                   width: `${width}%`,
                   backgroundColor: COLOR_PALETTE[i % COLOR_PALETTE.length],
-                  boxShadow: `0 0 8px ${COLOR_PALETTE[i % COLOR_PALETTE.length]}`,
+                  boxShadow: `0 0 10px ${COLOR_PALETTE[i % COLOR_PALETTE.length]}`,
                 }}
                 title={`${r.label || `Recipient ${i + 1}`}: ${r.share}%`}
               />
@@ -306,7 +309,7 @@ export function SplitBuilder({
       </div>
 
       {/* Recipients List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '26px' }}>
         {recipients.map((recipient, index) => {
           const sharePct = Number(recipient.share) || 0;
           const recipientPayout = ((parsedTotal * sharePct) / 100).toFixed(4);
@@ -315,25 +318,23 @@ export function SplitBuilder({
           return (
             <div
               key={index}
+              className="apple-card"
               style={{
-                background: 'rgba(8, 14, 28, 0.85)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
                 padding: '14px 18px',
                 display: 'grid',
-                gridTemplateColumns: 'minmax(120px, 1.2fr) minmax(220px, 3fr) minmax(100px, 1fr) minmax(90px, 1fr) 40px',
+                gridTemplateColumns: 'minmax(120px, 1.2fr) minmax(220px, 3fr) minmax(95px, 0.9fr) minmax(90px, 1fr) 36px',
                 alignItems: 'center',
                 gap: '12px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div
                   style={{
                     width: '10px',
                     height: '10px',
                     borderRadius: '50%',
                     backgroundColor: color,
-                    boxShadow: `0 0 8px ${color}`,
+                    boxShadow: `0 0 10px ${color}`,
                     flexShrink: 0,
                   }}
                 />
@@ -342,7 +343,7 @@ export function SplitBuilder({
                   value={recipient.label}
                   onChange={(e) => handleUpdateRecipient(index, 'label', e.target.value)}
                   placeholder={`Label #${index + 1}`}
-                  style={{ fontSize: '0.85rem', padding: '6px 10px', width: '100%' }}
+                  style={{ fontSize: '0.84rem', padding: '7px 11px', width: '100%', background: 'rgba(0, 0, 0, 0.3)' }}
                 />
               </div>
 
@@ -355,14 +356,15 @@ export function SplitBuilder({
                   className="mono"
                   style={{
                     fontSize: '0.82rem',
-                    padding: '6px 10px',
+                    padding: '7px 11px',
                     width: '100%',
-                    borderColor: recipient.address && !isValidAddress(recipient.address) ? '#ef4444' : undefined,
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    borderColor: recipient.address && !isValidAddress(recipient.address) ? 'rgba(239, 68, 68, 0.7)' : undefined,
                   }}
                 />
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <input
                   type="number"
                   min="0"
@@ -370,26 +372,28 @@ export function SplitBuilder({
                   step="1"
                   value={recipient.share}
                   onChange={(e) => handleUpdateRecipient(index, 'share', Number(e.target.value))}
-                  style={{ fontSize: '0.88rem', fontWeight: '700', padding: '6px 8px', width: '65px', textAlign: 'right' }}
+                  style={{ fontSize: '0.88rem', fontWeight: '700', padding: '7px 9px', width: '60px', textAlign: 'right', background: 'rgba(0, 0, 0, 0.3)' }}
                 />
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>%</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '600' }}>%</span>
               </div>
 
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.92rem', fontWeight: '800', color: color }}>
+                <div style={{ fontSize: '0.94rem', fontWeight: '800', color: color }}>
                   {recipientPayout}
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>USDC</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontWeight: '600' }}>USDC</div>
               </div>
 
               <div style={{ textAlign: 'center' }}>
                 {recipients.length > 1 && (
                   <button
                     onClick={() => handleRemoveRecipient(index)}
-                    style={{ color: 'var(--text-dim)', padding: '6px' }}
+                    style={{ color: 'var(--text-dim)', padding: '6px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition-fast)' }}
                     title="Remove recipient"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#ef4444')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-dim)')}
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 )}
               </div>
@@ -399,14 +403,14 @@ export function SplitBuilder({
       </div>
 
       {/* Add Recipient & Share as Tip Jar link */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '26px' }}>
         <button
           onClick={handleAddRecipient}
           disabled={recipients.length >= 8}
           className="btn-secondary"
-          style={{ fontSize: '0.85rem', padding: '8px 14px' }}
+          style={{ fontSize: '0.84rem', padding: '9px 16px' }}
         >
-          <Plus size={16} />
+          <Plus size={15} />
           <span>Add Recipient ({recipients.length}/8)</span>
         </button>
 
@@ -414,21 +418,21 @@ export function SplitBuilder({
           onClick={() => onGenerateTipJar({ recipients, memo, totalAmount })}
           className="btn-secondary"
           style={{
-            fontSize: '0.85rem',
-            padding: '8px 14px',
-            background: 'rgba(168, 85, 247, 0.12)',
-            borderColor: 'rgba(168, 85, 247, 0.4)',
+            fontSize: '0.84rem',
+            padding: '9px 16px',
+            background: 'rgba(168, 85, 247, 0.1)',
+            borderColor: 'rgba(168, 85, 247, 0.35)',
             color: '#c084fc',
           }}
         >
-          <Share2 size={16} />
+          <Share2 size={15} />
           <span>Generate Shareable Payment Link</span>
         </button>
       </div>
 
       {/* On-Chain Memo */}
-      <div style={{ marginBottom: '24px' }}>
-        <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-muted)', marginBottom: '6px' }}>
+      <div style={{ marginBottom: '26px' }}>
+        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
           On-Chain Memo / Reference (Logged in ArcSplit PaymentSplit Event)
         </label>
         <input
@@ -436,7 +440,7 @@ export function SplitBuilder({
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
           placeholder="e.g. Creator squad split, Hackathon reward, Infrastructure payout..."
-          style={{ width: '100%', fontSize: '0.88rem' }}
+          style={{ width: '100%', fontSize: '0.88rem', padding: '11px 15px' }}
         />
       </div>
 
@@ -456,7 +460,7 @@ export function SplitBuilder({
             marginBottom: '20px',
           }}
         >
-          <AlertCircle size={18} flexShrink={0} style={{ marginTop: '2px' }} />
+          <AlertCircle size={18} style={{ marginTop: '2px', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: '700', marginBottom: '2px' }}>Execution Error:</div>
             <div>{errorMessage}</div>

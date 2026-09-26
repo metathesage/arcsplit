@@ -70,16 +70,41 @@ async function main() {
   }
 
   const contract = await factory.deploy(deployOptions);
-  console.log(`Transaction sent: ${contract.deploymentTransaction().hash}`);
-  console.log('Waiting for confirmation on Arc...');
-  await contract.waitForDeployment();
+  const deployTx = contract.deploymentTransaction();
+  console.log(`Transaction broadcast: ${deployTx.hash}`);
+  console.log('Waiting for block confirmation on Arc...');
+  
+  let receipt = null;
+  for (let i = 0; i < 30; i++) {
+    try {
+      receipt = await provider.getTransactionReceipt(deployTx.hash);
+      if (receipt && receipt.contractAddress) break;
+    } catch (_) {}
+    await new Promise((r) => setTimeout(r, 1500));
+  }
 
-  const deployedAddress = await contract.getAddress();
+  const deployedAddress = (receipt && receipt.contractAddress) ? receipt.contractAddress : await contract.getAddress();
   console.log('\n======================================================');
   console.log(`⚡ ArcSplit successfully deployed to: ${deployedAddress}`);
   console.log(` Explorer: ${network.explorer}/address/${deployedAddress}`);
   console.log(' Built by @metathesage for Arc Network');
   console.log('======================================================\n');
+
+  // Automatically update src/config/constants.js with the new contract address
+  try {
+    const constantsPath = path.resolve(__dirname, '../src/config/constants.js');
+    let constantsContent = fs.readFileSync(constantsPath, 'utf8');
+    if (networkKey === 'mainnet') {
+      constantsContent = constantsContent.replace(
+        /defaultContract:\s*'0x[a-fA-F0-9]{40}'/,
+        `defaultContract: '${deployedAddress}'`
+      );
+    }
+    fs.writeFileSync(constantsPath, constantsContent, 'utf8');
+    console.log(`Updated src/config/constants.js defaultContract to: ${deployedAddress}`);
+  } catch (updateErr) {
+    console.warn('Could not auto-update constants.js:', updateErr.message);
+  }
 }
 
 main().catch((err) => {
