@@ -134,6 +134,20 @@ export function SplitBuilder({
         memo,
       });
 
+      // Save to localStorage history for Account view
+      try {
+        const existing = JSON.parse(localStorage.getItem('arcsplit_payment_history') || '[]');
+        const newRecord = {
+          id: `tx-${Date.now()}`,
+          txHash: result?.hash || result?.transactionHash || '',
+          amount: Number(parsedTotal).toFixed(2),
+          recipientsCount: recipientAddresses.length,
+          memo: memo || 'Instant Multi-Party Split',
+          timestamp: new Date().toISOString(),
+        };
+        localStorage.setItem('arcsplit_payment_history', JSON.stringify([newRecord, ...existing.slice(0, 49)]));
+      } catch (_) {}
+
       onPaymentSuccess({
         ...result,
         recipients,

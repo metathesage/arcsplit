@@ -5,10 +5,12 @@ import { SplitBuilder } from './components/SplitBuilder';
 import { TipJarGenerator } from './components/TipJarGenerator';
 import { ContractDeployer } from './components/ContractDeployer';
 import { AgenticSplitter } from './components/AgenticSplitter';
+import { DocsSection } from './components/DocsSection';
+import { AccountSection } from './components/AccountSection';
 import { SuccessModal } from './components/SuccessModal';
 import { LightningCanvas } from './components/LightningCanvas';
 import { RelayBridgeModal } from './components/RelayBridgeModal';
-import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink, ArrowLeftRight } from 'lucide-react';
+import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink, ArrowLeftRight, BookOpen, User } from 'lucide-react';
 import { DEMO_RECIPIENTS } from './config/constants';
 
 export function App() {
@@ -67,6 +69,12 @@ export function App() {
     setActiveTab('split');
   };
 
+  const handleLoadAddressBookToSplitter = (recipients) => {
+    setActiveRecipients(recipients);
+    setActiveMemo('Address Book Batch Split');
+    setActiveTab('split');
+  };
+
   return (
     <>
       {/* Background Interactive Lightning Storm Scene */}
@@ -88,6 +96,8 @@ export function App() {
           switchNetwork={web3.switchNetwork}
           toggleTargetNetwork={web3.toggleTargetNetwork}
           openRelayBridge={() => setIsRelayOpen(true)}
+          onNavigateAccount={() => setActiveTab('account')}
+          activeTab={activeTab}
         />
 
         {/* Incoming Shareable Link Banner (if loaded with ?split=) */}
@@ -331,8 +341,15 @@ export function App() {
             onClick={() => setActiveTab('docs')}
             className={`tab-btn ${activeTab === 'docs' ? 'active' : ''}`}
           >
-            <FileText size={15} />
-            <span>Specs</span>
+            <BookOpen size={15} />
+            <span>Docs</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('account')}
+            className={`tab-btn ${activeTab === 'account' ? 'active' : ''}`}
+          >
+            <User size={15} />
+            <span>Account</span>
           </button>
         </nav>
 
@@ -393,66 +410,19 @@ export function App() {
           )}
 
           {activeTab === 'docs' && (
-            <div className="glass-panel" style={{ padding: '28px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                <Zap size={24} color="#00f0ff" />
-                <h2 style={{ fontSize: '1.3rem', fontWeight: '800', color: 'white' }}>
-                  ArcSplit Protocol Specification & High-Voltage Architecture
-                </h2>
-              </div>
+            <DocsSection onNavigateSplit={() => setActiveTab('split')} />
+          )}
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                <div>
-                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
-                    1. The Power of Native USDC Gas
-                  </h3>
-                  <p>
-                    Arc is Circle's stablecoin-native Layer-1 designed specifically for programmable digital dollar finance. Unlike standard EVM rollups or L1s where users must hold volatile gas tokens (ETH/SOL/MATIC) and submit two transactions (approve + transfer), Arc transactions are paid directly in native USDC. ArcSplit takes full advantage of this to deliver zero-approval, single-click payouts.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
-                    2. Mathematical Precision & Safety
-                  </h3>
-                  <p>
-                    Allocations are defined in basis points (10,000 bps = 100.00%). Each recipient receives <code className="mono" style={{ color: '#00f0ff' }}>(msg.value * basisPoints[i]) / 10000</code>. Any fractional integer remainder from integer division is automatically forwarded to the primary recipient, guaranteeing zero locked wei.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 style={{ color: 'white', fontSize: '1.02rem', fontWeight: '700', marginBottom: '6px' }}>
-                    3. Agentic Economy Compatibility
-                  </h3>
-                  <p>
-                    ArcSplit natively integrates with Arc’s <strong>ERC-8004</strong> (Agent Identity & Reputation) and <strong>ERC-8183</strong> (Job Escrows), enabling AI agents to programmatically distribute bounties and API fees.
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                  <a
-                    href="https://docs.arc.io/build/agentic-economy"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-primary"
-                    style={{ fontSize: '0.85rem' }}
-                  >
-                    <span>Read Arc Agentic Economy Docs</span>
-                    <ExternalLink size={14} />
-                  </a>
-                  <a
-                    href="https://x.com/metathesage"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-secondary"
-                    style={{ fontSize: '0.85rem' }}
-                  >
-                    <span>Follow @metathesage</span>
-                    <ExternalLink size={14} />
-                  </a>
-                </div>
-              </div>
-            </div>
+          {activeTab === 'account' && (
+            <AccountSection
+              account={web3.account}
+              balance={web3.balance}
+              arcBalance={web3.arcBalance}
+              isArc={web3.isArc}
+              targetNetwork={web3.targetNetwork}
+              connectWallet={web3.connectWallet}
+              onLoadRecipientsToSplitter={handleLoadAddressBookToSplitter}
+            />
           )}
         </main>
 

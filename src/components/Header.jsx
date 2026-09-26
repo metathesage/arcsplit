@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink, ArrowLeftRight, LogOut } from 'lucide-react';
+import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink, ArrowLeftRight, LogOut, User } from 'lucide-react';
 
 const KNOWN_CHAINS = {
   1: 'Ethereum',
@@ -26,6 +26,8 @@ export function Header({
   switchNetwork,
   toggleTargetNetwork,
   openRelayBridge,
+  onNavigateAccount,
+  activeTab,
 }) {
   const isTestnet = targetNetwork.chainId === 5042002;
   const currentChainName = KNOWN_CHAINS[chainId] || (chainId ? `Chain ${chainId}` : 'Unknown Chain');
@@ -186,6 +188,25 @@ export function Header({
             <PlusCircle size={13} />
             <span>Add Arc</span>
           </button>
+
+          {/* Account Hub Button */}
+          {onNavigateAccount && (
+            <button
+              onClick={onNavigateAccount}
+              className="btn-secondary"
+              style={{
+                fontSize: '0.78rem',
+                padding: '7px 12px',
+                borderColor: activeTab === 'account' ? 'rgba(0, 240, 255, 0.4)' : undefined,
+                color: activeTab === 'account' ? '#00f0ff' : undefined,
+                background: activeTab === 'account' ? 'rgba(0, 240, 255, 0.08)' : undefined,
+              }}
+              title="Open Account Profile & Circle Passkeys"
+            >
+              <User size={13} />
+              <span>Account</span>
+            </button>
+          )}
 
           {/* Wallet Status / Connect Button */}
           {account ? (
