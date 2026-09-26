@@ -24,14 +24,18 @@ On traditional chains (Ethereum, Arbitrum, Base), distributing payments across m
 
 ---
 
-## ⛓️ Arc Network Parameters
+## 🌐 Live Demo & Deployment
+- **Live dApp URL:** [https://arcsplit-two.vercel.app](https://arcsplit-two.vercel.app)
+- **GitHub Repository:** [https://github.com/metathesage/arcsplit](https://github.com/metathesage/arcsplit)
 
-| Parameter | Arc Mainnet | Arc Testnet |
-| :--- | :--- | :--- |
-| **Chain ID** | `5042` (`0x13b2`) | `5042002` (`0x4cef72`) |
-| **RPC Endpoint** | `https://rpc.mainnet.arc.io` | `https://rpc.testnet.arc.io` |
-| **Currency Symbol** | `USDC` | `USDC` |
-| **Block Explorer** | [explorer.arc.io](https://explorer.arc.io) | [explorer.testnet.arc.io](https://explorer.testnet.arc.io) |
+---
+
+## ⛓️ Deployed Contracts & Arc Network Parameters
+
+| Network | Chain ID | Contract Address | Explorer Link | RPC Endpoint |
+| :--- | :--- | :--- | :--- | :--- |
+| **Arc Mainnet** | `5042` (`0x13b2`) | `0x57B02Be99573B4aD4d744278821932f5b8742535` | [View on Arc Explorer](https://explorer.arc.io/address/0x57B02Be99573B4aD4d744278821932f5b8742535) | `https://rpc.mainnet.arc.io` |
+| **Arc Testnet** | `5042002` (`0x4cef72`) | `0x3B31124377078eE939786e2765e1820Ad2C96399` | [View on Testnet Explorer](https://explorer.testnet.arc.io/address/0x3B31124377078eE939786e2765e1820Ad2C96399) | `https://rpc.testnet.arc.io` |
 
 ---
 
