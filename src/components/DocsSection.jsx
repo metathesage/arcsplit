@@ -255,6 +255,33 @@ export function DocsSection() {
               </li>
             </ul>
           </div>
+
+          {/* Arc App Kit & Circle Onramp Section */}
+          <div className="reso-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', color: '#ffffff', margin: 0 }}>
+                Arc App Kit & Circle Fiat Onramp Integration
+              </h3>
+              <span className="badge badge-accent">docs.arc.io/app-kit/onramp</span>
+            </div>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+              ArcSplit natively integrates Circle's official <strong style={{ color: '#ffffff' }}>@circle-fin/onramp-kit</strong> and the Arc App Kit Fiat Onramp, offering frictionless digital dollar onboarding directly within the application:
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginTop: '14px' }}>
+              <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '14px' }}>
+                <div style={{ color: '#00f0ff', fontWeight: '600', fontSize: '0.86rem', marginBottom: '6px' }}>💳 Apple Pay, Google Pay & Debit Cards</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Allows mainstream users and corporate treasuries to purchase native Arc USDC instantly with everyday payment rails.</div>
+              </div>
+              <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '14px' }}>
+                <div style={{ color: '#34d399', fontWeight: '600', fontSize: '0.86rem', marginBottom: '6px' }}>⚡ Direct Arc L1 Settlement</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Tokens settle directly to the user's Arc Mainnet address (Chain ID 5042) as native gas-ready USDC with zero bridging friction.</div>
+              </div>
+              <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '14px' }}>
+                <div style={{ color: '#c084fc', fontWeight: '600', fontSize: '0.86rem', marginBottom: '6px' }}>🔒 Serverless Ephemeral Sessions</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Onramp sessions are minted via Vercel serverless functions with isolated Circle API credentials, keeping sensitive keys protected.</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -400,6 +427,27 @@ export function DocsSection() {
       {/* SUB-TAB 4: PATCH NOTES & CHANGELOG */}
       {activeSubTab === 'patchnotes' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* v1.3.0 */}
+          <div className="reso-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', padding: '3px 8px', borderRadius: 'var(--radius-xs)', background: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff', fontWeight: '700' }}>
+                  v1.3.0
+                </span>
+                <span style={{ fontSize: '0.88rem', fontWeight: '700', color: '#ffffff' }}>
+                  Arc App Kit Fiat Onramp & Passkey Smart Accounts
+                </span>
+              </div>
+              <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>September 2026</span>
+            </div>
+            <ul style={{ paddingLeft: '20px', fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
+              <li><strong>Arc App Kit Onramp:</strong> Integrated Circle's official <code className="mono">@circle-fin/onramp-kit</code> for instant Apple Pay, Google Pay, and Debit Card purchase of native Arc USDC.</li>
+              <li><strong>Secure Serverless Sessions:</strong> Deployed <code className="mono">/api/onramp/sessions</code> serverless function to securely mint ephemeral Arc Onramp tokens with secret isolation.</li>
+              <li><strong>Passkey Smart Accounts:</strong> Added full biometric WebAuthn / Passkey account architecture for keyless biometric access to Arc L1.</li>
+              <li><strong>Interactive Onramp Modal:</strong> Embedded live <code className="mono">https://onramp.arc.io</code> responsive widget with automated wallet pre-population and settlement postMessage events.</li>
+            </ul>
+          </div>
+
           {/* v1.2.0 */}
           <div className="reso-card">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>

@@ -10,6 +10,7 @@ import { AccountSection } from './components/AccountSection';
 import { SuccessModal } from './components/SuccessModal';
 import { LightningCanvas } from './components/LightningCanvas';
 import { RelayBridgeModal } from './components/RelayBridgeModal';
+import { OnrampModal } from './components/OnrampModal';
 import { Sliders, Share2, Rocket, FileText, Heart, Zap, Bot, ExternalLink, ArrowLeftRight, BookOpen, User } from 'lucide-react';
 import { DEMO_RECIPIENTS } from './config/constants';
 
@@ -20,6 +21,7 @@ export function App() {
   const [successData, setSuccessData] = useState(null);
   const [lightningIntensity, setLightningIntensity] = useState('storm');
   const [isRelayOpen, setIsRelayOpen] = useState(false);
+  const [isOnrampOpen, setIsOnrampOpen] = useState(false);
 
   // Incoming payment link query state
   const [incomingSplit, setIncomingSplit] = useState(null);
@@ -96,6 +98,7 @@ export function App() {
           switchNetwork={web3.switchNetwork}
           toggleTargetNetwork={web3.toggleTargetNetwork}
           openRelayBridge={() => setIsRelayOpen(true)}
+          openOnrampModal={() => setIsOnrampOpen(true)}
           onNavigateAccount={() => setActiveTab('account')}
           activeTab={activeTab}
         />
@@ -366,6 +369,7 @@ export function App() {
               onPaymentSuccess={(data) => setSuccessData(data)}
               onGenerateTipJar={handleGenerateTipJar}
               onNavigateDeployer={() => setActiveTab('deployer')}
+              openOnrampModal={() => setIsOnrampOpen(true)}
             />
           )}
 
@@ -422,6 +426,7 @@ export function App() {
               targetNetwork={web3.targetNetwork}
               connectWallet={web3.connectWallet}
               onLoadRecipientsToSplitter={handleLoadAddressBookToSplitter}
+              openOnrampModal={() => setIsOnrampOpen(true)}
             />
           )}
         </main>
@@ -457,6 +462,10 @@ export function App() {
               Arc Agentic Economy
             </a>
             <span>•</span>
+            <a href="https://docs.arc.io/app-kit/onramp" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
+              Arc App Kit Onramp
+            </a>
+            <span>•</span>
             <a href="https://explorer.arc.io" target="_blank" rel="noreferrer" style={{ color: '#00f0ff' }}>
               Arc Explorer
             </a>
@@ -480,6 +489,15 @@ export function App() {
         <RelayBridgeModal
           isOpen={isRelayOpen}
           onClose={() => setIsRelayOpen(false)}
+          account={web3.account}
+          targetNetwork={web3.targetNetwork}
+          onSuccessRefresh={web3.reloadBalance}
+        />
+
+        {/* Arc App Kit Onramp Modal (Buy with Card / Apple Pay) */}
+        <OnrampModal
+          isOpen={isOnrampOpen}
+          onClose={() => setIsOnrampOpen(false)}
           account={web3.account}
           targetNetwork={web3.targetNetwork}
           onSuccessRefresh={web3.reloadBalance}

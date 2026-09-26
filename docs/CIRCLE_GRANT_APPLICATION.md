@@ -19,6 +19,9 @@ ArcSplit natively utilizes USDC as both the primary settlement currency and the 
 
 2. Cross-Chain USDC Ingestion (via Relay & CCTP routing):
 ArcSplit integrates cross-chain bridging infrastructure that routes USDC from Ethereum, Base, Arbitrum, Optimism, Polygon, and Solana into native Arc USDC, enabling users on any ecosystem to fund and execute splits on Arc with immediate settlement.
+
+3. Circle Onramp Kit (@circle-fin/onramp-kit) & Arc App Kit Fiat Onramp:
+ArcSplit integrates Circle's official @circle-fin/onramp-kit and Arc App Kit Fiat Onramp (https://docs.arc.io/app-kit/onramp). Users can purchase native Arc USDC directly with Apple Pay, Google Pay, and debit cards right inside the dApp via serverless ephemeral session tokens, onboarding mainstream creators and organizations to Arc without prior crypto experience.
 ```
 
 ---

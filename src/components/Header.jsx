@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink, ArrowLeftRight, LogOut, User } from 'lucide-react';
+import { Wallet, PlusCircle, CheckCircle, AlertTriangle, Zap, ExternalLink, ArrowLeftRight, LogOut, User, CreditCard } from 'lucide-react';
 
 const KNOWN_CHAINS = {
   1: 'Ethereum',
@@ -26,6 +26,7 @@ export function Header({
   switchNetwork,
   toggleTargetNetwork,
   openRelayBridge,
+  openOnrampModal,
   onNavigateAccount,
   activeTab,
 }) {
@@ -175,6 +176,28 @@ export function Header({
             >
               <ArrowLeftRight size={13} />
               <span>Bridge</span>
+            </button>
+          )}
+
+          {/* Buy USDC on Arc (Fiat Onramp via Arc App Kit) */}
+          {openOnrampModal && (
+            <button
+              onClick={openOnrampModal}
+              className="btn-secondary"
+              style={{
+                fontSize: '0.78rem',
+                padding: '7px 12px',
+                borderColor: 'rgba(0, 240, 255, 0.4)',
+                background: 'rgba(0, 240, 255, 0.08)',
+                color: '#00f0ff',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+              title="Buy native USDC on Arc directly with Debit Card, Apple Pay, or Google Pay via Arc App Kit"
+            >
+              <CreditCard size={13} />
+              <span>Buy USDC</span>
             </button>
           )}
 
