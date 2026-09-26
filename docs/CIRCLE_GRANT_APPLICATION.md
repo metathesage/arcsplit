@@ -82,14 +82,21 @@ https://drive.google.com/drive/folders/1bj8sxJgPVW5bYXfd_Dklb4ZsiXtcBO1b?usp=sha
 ```
 
 **Drive folder contents (ArcSplit — Circle Grant Materials):**
-| # | File | Purpose |
-|---|------|---------|
-| 1 | `01-arcsplit-sol-splitNative.png` | Screenshot: `splitNative()` — atomic USDC distribution & remainder logic (Q12) |
-| 2 | `02-agentic-splitter-sdk.png` | Screenshot: agent swarm TS/Python USDC payout SDK (Q12) |
-| 3 | `03-arcsplit-dapp-dashboard.png` | Screenshot: live dApp at arcsplit-two.vercel.app (Q12) |
-| 4 | `ArcSplit-Investor-Deck.pdf` | 10-slide investor & ecosystem deck (Q13) |
-| 5 | `ArcSplit-Video-Transcript.pdf` | Full video walkthrough narration transcript (Q11) |
-| 6 | `Video-Walkthrough-Script.md` | Recording script with timestamps (docs/VIDEO_TRANSCRIPT.md) |
+| # | File | Circle Product & Purpose |
+|---|------|--------------------------|
+| 1 | `01-circle-native-usdc-arcsplit-contract.png` | **Product 1 (Native USDC on Arc):** `splitNative()` atomic distribution, 10,000 bps math, zero-approval settlement (`contracts/ArcSplit.sol`) |
+| 2 | `02-circle-native-usdc-verification.png` | **Product 1 (Native USDC on Arc):** Arc Mainnet (5042) deployment & verification with 18-decimal native USDC gas |
+| 3 | `03-circle-programmable-wallets-passkey.png` | **Product 2 (Programmable Wallets):** WebAuthn biometric passkey onboarding & gas-sponsored non-custodial wallets (`src/components/AccountSection.jsx`) |
+| 4 | `04-circle-wallets-addressbook-history.png` | **Product 2 (Programmable Wallets):** Beneficiary Address Book & 1-click batch split execution + CSV export |
+| 5 | `05-circle-crosschain-usdc-cctp-routing.png` | **Product 3 (Cross-Chain USDC / CCTP):** Multi-chain USDC ingestion configuration routing to Arc L1 native gas (`src/components/RelayBridgeModal.jsx`) |
+| 6 | `06-circle-crosschain-usdc-execution.png` | **Product 3 (Cross-Chain USDC / CCTP):** Sub-second cross-chain quote fetching, gas breakdown, and automated balance sync |
+| 7 | `07-circle-agentic-swarm-sdk-ts.png` | **Product 4 (Agentic Economy):** TypeScript autonomous swarm SDK for ERC-8004 identity & ERC-8183 job escrows (`src/components/AgenticSplitter.jsx`) |
+| 8 | `08-circle-agentic-swarm-sdk-py.png` | **Product 4 (Agentic Economy):** Python / Web3.py SDK script for LangChain / CrewAI autonomous agent micropayments |
+| 9 | `09-arcsplit-system-architecture-diagram.png` | **Architecture Diagram:** Comprehensive 3-tier system architecture illustrating end-to-end Circle product integration |
+| 10 | `03-arcsplit-dapp-dashboard.png` | **Production UI:** Live dApp dashboard at `https://arcsplit-two.vercel.app` |
+| 11 | `ArcSplit-Investor-Deck.pdf` | **Investor Deck:** 10-slide high-res strategic deck (Q13) |
+| 12 | `ArcSplit-Video-Transcript.pdf` | **Video Transcript:** Narration transcript for the 2:25 video walkthrough (Q11) |
+| 13 | `ArcSplit-Grant-Walkthrough.mp4` | **Video Demo:** 1080p full narrated video walkthrough (Q10) |
 
 ---
 
@@ -145,8 +152,9 @@ https://github.com/metathesage/arcsplit/blob/master/docs/VIDEO_TRANSCRIPT.md
 
 ### Field 12: Code Screenshots Link
 ```text
-[Paste your Google Drive link or reference GitHub repo code links]
+https://drive.google.com/drive/folders/1bj8sxJgPVW5bYXfd_Dklb4ZsiXtcBO1b?usp=sharing
 ```
+*(Backup GitHub Link: https://github.com/metathesage/arcsplit/tree/master/grant-kit)*
 
 ---
 

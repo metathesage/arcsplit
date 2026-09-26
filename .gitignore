@@ -27,3 +27,5 @@ dist-ssr
 *.sw?
 
 .vercel
+grant-kit/_cut/
+grant-kit/_review/
