@@ -78,8 +78,18 @@ Code: https://github.com/metathesage/arcsplit
 
 ### Field 5: Verification Documents (Google Drive link)
 ```text
-[Paste your Google Drive link here, or reference the repository docs: https://github.com/metathesage/arcsplit/tree/master/docs]
+https://drive.google.com/drive/folders/1bj8sxJgPVW5bYXfd_Dklb4ZsiXtcBO1b?usp=sharing
 ```
+
+**Drive folder contents (ArcSplit — Circle Grant Materials):**
+| # | File | Purpose |
+|---|------|---------|
+| 1 | `01-arcsplit-sol-splitNative.png` | Screenshot: `splitNative()` — atomic USDC distribution & remainder logic (Q12) |
+| 2 | `02-agentic-splitter-sdk.png` | Screenshot: agent swarm TS/Python USDC payout SDK (Q12) |
+| 3 | `03-arcsplit-dapp-dashboard.png` | Screenshot: live dApp at arcsplit-two.vercel.app (Q12) |
+| 4 | `ArcSplit-Investor-Deck.pdf` | 10-slide investor & ecosystem deck (Q13) |
+| 5 | `ArcSplit-Video-Transcript.pdf` | Full video walkthrough narration transcript (Q11) |
+| 6 | `Video-Walkthrough-Script.md` | Recording script with timestamps (docs/VIDEO_TRANSCRIPT.md) |
 
 ---
 
