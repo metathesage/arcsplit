@@ -21,6 +21,7 @@ import {
   Bookmark
 } from 'lucide-react';
 import { ARC_MAINNET } from '../config/constants';
+import { circleService } from '../services/circleService';
 
 export function AccountSection({
   account,
@@ -44,6 +45,17 @@ export function AccountSection({
   const [createdPasskeyWallet, setCreatedPasskeyWallet] = useState(
     () => localStorage.getItem('arcsplit_passkey_wallet') || null
   );
+  const [circleApiConnected, setCircleApiConnected] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    circleService.ping().then((res) => {
+      if (isMounted && res.success) setCircleApiConnected(true);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Address Book state
   const [addressBook, setAddressBook] = useState(() => {
@@ -296,11 +308,34 @@ export function AccountSection({
             background: 'linear-gradient(180deg, rgba(14, 18, 32, 0.85) 0%, rgba(20, 15, 30, 0.85) 100%)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <Fingerprint size={20} color="#c084fc" />
-            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: '#ffffff' }}>
-              Circle Passkey Onboarding (WebAuthn)
-            </h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Fingerprint size={20} color="#c084fc" />
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: '#ffffff' }}>
+                Circle Passkey Onboarding (WebAuthn)
+              </h3>
+            </div>
+            {circleApiConnected && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  fontSize: '0.72rem',
+                  color: '#10b981',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '600',
+                }}
+                title="Live handshake with https://api.circle.com verified"
+              >
+                <CheckCircle size={11} />
+                <span>Circle Live API Connected</span>
+              </div>
+            )}
           </div>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: '1.5', marginBottom: '14px' }}>
             Powered by Circle Developer Services. Create an instant, non-custodial smart contract wallet using FaceID or TouchID—zero browser extension needed.
